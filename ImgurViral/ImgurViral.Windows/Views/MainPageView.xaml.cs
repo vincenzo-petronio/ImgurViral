@@ -15,14 +15,14 @@ using Windows.UI.Xaml.Navigation;
 
 // Il modello di elemento per la pagina vuota è documentato all'indirizzo http://go.microsoft.com/fwlink/?LinkId=234238
 
-namespace ImgurViral
+namespace ImgurViral.Views
 {
     /// <summary>
     /// Pagina vuota che può essere utilizzata autonomamente oppure esplorata all'interno di un frame.
     /// </summary>
-    public sealed partial class MainPage : Page
+    public sealed partial class MainPageView : Page
     {
-        public MainPage()
+        public MainPageView()
         {
             this.InitializeComponent();
         }
