@@ -9,6 +9,15 @@
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
     <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
 
+        <Grid Grid.Row="0" Background="#FF89C624">
+            <TextBlock x:Uid="AppTitle" Text="" FontSize="{StaticResource FlyoutThemeMinHeight}" />
+        </Grid>
+        
+        <FlipView Grid.Row="1" VerticalAlignment="Stretch"/>
     </Grid>
 </Page>

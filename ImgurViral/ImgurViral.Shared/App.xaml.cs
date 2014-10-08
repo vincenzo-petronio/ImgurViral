@@ -46,6 +46,7 @@ namespace ImgurViral
         /// <param name="e">Dettagli sulla richiesta e il processo di avvio.</param>
         protected override void OnLaunched(LaunchActivatedEventArgs e)
         {
+            // View First approach
             DisplayRootView<MainPageView>();
         }
 
