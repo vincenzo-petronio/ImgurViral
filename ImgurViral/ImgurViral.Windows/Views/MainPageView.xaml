@@ -17,9 +17,14 @@
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="120"/>
                 <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto" />
             </Grid.ColumnDefinitions>
 
             <TextBlock Grid.Column="1" x:Uid="AppTitle" Text="" FontSize="{ThemeResource FlyoutThemeMinHeight}" VerticalAlignment="Bottom"/>
+            <StackPanel Orientation="Horizontal" Grid.Column="2" Margin="0,0,20,0">
+                <ProgressRing Grid.Column="2" IsActive="{Binding ProgressRingIsActive}" Height="60" Width="60"/>
+                <TextBlock Margin="20,0,0,0" Text="download in progress..." VerticalAlignment="Center" FontSize="48" FontFamily="Segoe UI"/>
+            </StackPanel>
         </Grid>
         
         <FlipView Grid.Row="1" VerticalAlignment="Stretch" x:Name="Items"/>
