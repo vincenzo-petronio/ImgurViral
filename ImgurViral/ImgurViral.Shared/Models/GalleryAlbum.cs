@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -14,9 +15,13 @@ namespace ImgurViral.Models
         public String Description { get; set; }
         public Int32 DateTime { get; set; }
         public String Cover { get; set; }
+        [JsonProperty(PropertyName = "cover_width")]
         public Int32 CoverWidth { get; set; }
+        [JsonProperty(PropertyName = "cover_height")]
         public Int32 CoverHeight { get; set; }
+        [JsonProperty(PropertyName = "account_url")]
         public String AccountUrl { get; set; }
+        [JsonProperty(PropertyName = "account_id")]
         public Int32 AccountId { get; set; }
         public String Privacy { get; set; }
         public String Layout { get; set; }
@@ -25,10 +30,14 @@ namespace ImgurViral.Models
         public Int32 Ups { get; set; }
         public Int32 Downs { get; set; }
         public Int32 Score { get; set; }
+        [JsonProperty(PropertyName = "is_album")]
         public Boolean IsAlbum { get; set; }
         private String Vote { get; set; }
-        public Boolean Favorite { get; set; }
-        public Boolean Nsfw { get; set; }
+        [JsonProperty(PropertyName = "favorite")]
+        public Boolean IsFavorite { get; set; }
+        [JsonProperty(PropertyName = "nsfw")]
+        public Boolean IsNsfw { get; set; }
+        [JsonProperty(PropertyName = "images_count")]
         public Int32 ImagesCount { get; set; }
         public List<Image> Images { get; set; }
     }
