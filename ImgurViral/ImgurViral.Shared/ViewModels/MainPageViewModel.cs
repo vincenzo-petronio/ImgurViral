@@ -1,21 +1,33 @@
 ﻿using Caliburn.Micro;
+using ImgurViral.Models;
+using ImgurViral.Utils;
 using System;
 using System.Collections.Generic;
-using System.Text;
 
 namespace ImgurViral.ViewModels
 {
-    public class MainPageViewModel : PropertyChangedBase
+    public class MainPageViewModel : Screen
     {
+        private IDataService dataService;
         private Boolean progressRingIsActive;
-        private List<String> items;
+        private List<GalleryImageData> items;
         
-        public MainPageViewModel()
+        public MainPageViewModel(IDataService dataService)
         {
+            this.dataService = dataService;
             progressRingIsActive = true;
-            this.items = new List<string>();
-            items.Add("akjsnflasnfla");
-            items.Add("7856346839");
+            this.items = new List<GalleryImageData>();
+        }
+
+        protected override async void OnActivate()
+        {
+            base.OnActivate();
+            await this.dataService.getGalleryImage((gallery, err) => {
+                if (gallery != null)
+                {
+                    this.Items = gallery;
+                }
+            });
         }
 
         public Boolean ProgressRingIsActive
@@ -34,8 +46,8 @@ namespace ImgurViral.ViewModels
                 }
             }
         }
-        
-        public List<String> Items
+
+        public List<GalleryImageData> Items
         {
             get
             {

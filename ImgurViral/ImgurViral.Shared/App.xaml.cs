@@ -5,6 +5,7 @@ using Windows.ApplicationModel.Activation;
 using Windows.UI.Xaml.Controls;
 using ImgurViral.ViewModels;
 using ImgurViral.Views;
+using ImgurViral.Utils;
 
 // Il modello di applicazione vuota è documentato all'indirizzo http://go.microsoft.com/fwlink/?LinkId=234227
 
@@ -30,6 +31,7 @@ namespace ImgurViral
         {
             container = new WinRTContainer();
             container.RegisterWinRTServices();
+            container.Singleton<IDataService, DataService>();
             container.PerRequest<MainPageViewModel>();
         }
 

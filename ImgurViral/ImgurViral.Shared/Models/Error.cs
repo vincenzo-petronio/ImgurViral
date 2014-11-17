@@ -7,7 +7,7 @@ namespace ImgurViral.Models
     /// <summary>
     /// Model for API error 
     /// </summary>
-    class Error
+    class ApiError
     {
         public String Error { get; set; }
         public String Request { get; set; }

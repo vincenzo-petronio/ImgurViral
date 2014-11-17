@@ -8,6 +8,12 @@
     mc:Ignorable="d"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
+    <Page.Resources>
+        <DataTemplate x:Name="FlipViewTemplate">
+            <TextBlock Text="{Binding Title}" />
+        </DataTemplate>
+    </Page.Resources>
+    
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
@@ -17,7 +23,7 @@
         <Grid Grid.Row="0" Background="#FF89C624">
             <TextBlock x:Uid="AppTitle" Text="" FontSize="{StaticResource FlyoutThemeMinHeight}" />
         </Grid>
-        
-        <FlipView x:Name="Items" Grid.Row="1" VerticalAlignment="Stretch"/>
+
+        <FlipView x:Name="Items" Grid.Row="1" VerticalAlignment="Stretch" ItemTemplate="{StaticResource FlipViewTemplate}"/>
     </Grid>
 </Page>

@@ -7,6 +7,12 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d">
 
+    <Page.Resources>
+        <DataTemplate x:Name="FlipViewTemplate">
+            <TextBlock Text="{Binding Description}" />
+        </DataTemplate>
+    </Page.Resources>
+    
     <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
         <Grid.RowDefinitions>
             <RowDefinition Height="140"/>
@@ -27,7 +33,7 @@
             </StackPanel>
         </Grid>
         
-        <FlipView Grid.Row="1" VerticalAlignment="Stretch" x:Name="Items"/>
+        <FlipView Grid.Row="1" VerticalAlignment="Stretch" x:Name="Items" ItemTemplate="{StaticResource FlipViewTemplate}"/>
 
     </Grid>
 </Page>

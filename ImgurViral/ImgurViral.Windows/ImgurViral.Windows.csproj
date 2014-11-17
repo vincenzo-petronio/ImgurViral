@@ -137,6 +137,9 @@
     <Reference Include="Microsoft.Xaml.Interactivity">
       <HintPath>..\..\packages\Caliburn.Micro.2.0.1\lib\win81\Microsoft.Xaml.Interactivity.dll</HintPath>
     </Reference>
+    <Reference Include="Newtonsoft.Json">
+      <HintPath>..\..\packages\Newtonsoft.Json.6.0.6\lib\netcore45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Page Include="Views\MainPageView.xaml">
