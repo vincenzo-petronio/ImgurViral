@@ -15,7 +15,7 @@ namespace ImgurViral.ViewModels
         public MainPageViewModel(IDataService dataService)
         {
             this.dataService = dataService;
-            progressRingIsActive = true;
+            this.progressRingIsActive = true;
             this.items = new List<GalleryImageData>();
         }
 
@@ -26,6 +26,7 @@ namespace ImgurViral.ViewModels
                 if (gallery != null)
                 {
                     this.Items = gallery;
+                    ProgressRingIsActive = false;
                 }
             });
         }

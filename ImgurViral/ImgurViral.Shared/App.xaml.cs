@@ -6,6 +6,7 @@ using Windows.UI.Xaml.Controls;
 using ImgurViral.ViewModels;
 using ImgurViral.Views;
 using ImgurViral.Utils;
+using ImgurViral.Models;
 
 // Il modello di applicazione vuota è documentato all'indirizzo http://go.microsoft.com/fwlink/?LinkId=234227
 
@@ -17,6 +18,7 @@ namespace ImgurViral
     public sealed partial class App
     {
         private WinRTContainer container;
+        //public static AuthUser authUser = new AuthUser();
 
         /// <summary>
         /// Inizializza l'oggetto Application singleton. Si tratta della prima riga del codice creato
@@ -32,7 +34,9 @@ namespace ImgurViral
             container = new WinRTContainer();
             container.RegisterWinRTServices();
             container.Singleton<IDataService, DataService>();
+            container.PerRequest<AuthViewModel>();
             container.PerRequest<MainPageViewModel>();
+            //container.Singleton<AuthUser>();
         }
 
         protected override void PrepareViewFirst(Frame rootFrame)
@@ -49,7 +53,8 @@ namespace ImgurViral
         protected override void OnLaunched(LaunchActivatedEventArgs e)
         {
             // View First approach
-            DisplayRootView<MainPageView>();
+            // DisplayRootView<MainPageView>();
+            DisplayRootView<AuthView>();
         }
 
         protected override object GetInstance(Type service, string key)

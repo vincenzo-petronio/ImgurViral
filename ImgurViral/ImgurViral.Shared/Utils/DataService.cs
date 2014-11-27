@@ -6,6 +6,9 @@ using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
 using System.Linq;
+using Windows.Storage;
+using System.IO;
+using System.Diagnostics;
 
 namespace ImgurViral.Utils
 {
@@ -50,14 +53,30 @@ namespace ImgurViral.Utils
             var httpClient = new HttpClient();
             try
             {
-                httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Authorization", "Client-ID " + Constants.API_CLIENTID);
-                response = await httpClient.GetStringAsync(new Uri(uri));
-                //var content = new FormUrlEncodedContent(new[] 
-                //    {
-                //        new KeyValuePair<string, string>("Authorization", "Client-ID " + Constants.API_CLIENTID)
-                //    });
-                //var r = await httpClient.PostAsync(new Uri(uri), content);
-                //response = r.Content.ReadAsStringAsync().Result;
+                StorageFolder sFolder = Windows.Storage.ApplicationData.Current.LocalFolder;
+                StorageFile sFile = await sFolder.CreateFileAsync(Constants.AUTH_LOCALSETTINGS_FILENAME, CreationCollisionOption.OpenIfExists);
+                // READ
+                string sFileContent = null;
+                using (var sFileReader = new StreamReader(await sFile.OpenStreamForReadAsync()))
+                {
+                    sFileContent = await sFileReader.ReadToEndAsync();
+                }
+
+                if (sFileContent != null)
+                {
+
+                    // httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Authorization", "Client-ID " + Constants.API_CLIENTID);
+                    AuthUser jsonToAuthUser = await JsonConvert.DeserializeObjectAsync<AuthUser>(sFileContent);
+                    Debug.WriteLine("[DATASERVICE]\t" + jsonToAuthUser.AccessToken);
+                    httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Authorization", "Bearer " + jsonToAuthUser.AccessToken);
+                    response = await httpClient.GetStringAsync(new Uri(uri));
+                    //var content = new FormUrlEncodedContent(new[] 
+                    //    {
+                    //        new KeyValuePair<string, string>("Authorization", "Client-ID " + Constants.API_CLIENTID)
+                    //    });
+                    //var r = await httpClient.PostAsync(new Uri(uri), content);
+                    //response = r.Content.ReadAsStringAsync().Result;
+                }
             }
             catch (Exception ex)
             {

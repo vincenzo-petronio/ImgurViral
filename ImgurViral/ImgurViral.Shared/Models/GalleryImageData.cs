@@ -21,7 +21,7 @@ namespace ImgurViral.Models
         public Int32 Height { get; set; }
         public Int32 Size { get; set; }
         public Int32 Views { get; set; }
-        public Int32 Bandwidth { get; set; }
+        public Int64 Bandwidth { get; set; }
         public String DeleteHash { get; set; }
         public String Link { get; set; }
         public String Gifv { get; set; }
