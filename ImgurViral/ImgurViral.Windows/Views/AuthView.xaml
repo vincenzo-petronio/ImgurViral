@@ -8,7 +8,15 @@
     mc:Ignorable="d">
 
     <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="20*" />
+            <ColumnDefinition Width="60*" />
+            <ColumnDefinition Width="20*" />
+        </Grid.ColumnDefinitions>
+        
         <WebView Name="webView" 
+                 Grid.Column="1"
+                 VerticalAlignment="Stretch"
                  Loaded="WebView_Loaded" 
                  NavigationStarting="webView_NavigationStarting" />
     </Grid>

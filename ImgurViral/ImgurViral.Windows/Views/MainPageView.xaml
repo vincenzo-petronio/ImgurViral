@@ -6,37 +6,54 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d">
-
-    <Page.Resources>
-        <DataTemplate x:Name="FlipViewTemplate">
-            <StackPanel>
-                <TextBlock Text="{Binding Description}" />
-                <Image Source="{Binding Link}" Stretch="Uniform"/>
-            </StackPanel>
-        </DataTemplate>
-    </Page.Resources>
     
     <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
         <Grid.RowDefinitions>
-            <RowDefinition Height="140"/>
+            <RowDefinition Height="160"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
         <Grid Grid.Row="0" Background="#FF89C624">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="120"/>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="40*"/>
+                <ColumnDefinition Width="60*" />
             </Grid.ColumnDefinitions>
 
-            <TextBlock Grid.Column="1" x:Uid="AppTitle" Text="" FontSize="{ThemeResource FlyoutThemeMinHeight}" VerticalAlignment="Bottom"/>
-            <StackPanel Orientation="Horizontal" Grid.Column="2" Margin="0,0,20,0">
-                <ProgressRing Grid.Column="2" IsActive="{Binding ProgressRingIsActive}" Height="60" Width="60"/>
-                <TextBlock Margin="20,0,0,0" Text="download in progress..." VerticalAlignment="Center" FontSize="48" FontFamily="Segoe UI"/>
+            <Image Source="ms-appx:///Assets/imgur_logo_dot.png" Stretch="Uniform" Margin="20"/>
+            <ProgressRing Grid.Column="0" IsActive="{Binding ProgressRingIsActive}" Height="40" Width="40" HorizontalAlignment="Center" />
+            <StackPanel Grid.Column="1" Margin="20" VerticalAlignment="Stretch">
+                <TextBlock Grid.Column="1" x:Uid="AppTitle" Text="" VerticalAlignment="Top" FontFamily="Segoe UI Light" FontSize="42" />
+                <TextBlock Text="{Binding ElementName=Items, Path=SelectedItem.Title}" VerticalAlignment="Bottom" FontFamily="Segoe UI Light" FontSize="20" TextWrapping="Wrap" />
             </StackPanel>
+            <Grid Grid.Column="2" Margin="20">
+                <StackPanel Orientation="Vertical">
+                    <TextBlock FontFamily="Segoe UI Semibold" FontSize="14" >
+                        <Run Text="Score: " />
+                        <Run Text="{Binding ElementName=Items, Path=SelectedItem.Score}" />
+                    </TextBlock>
+                    <TextBlock FontFamily="Segoe UI Semibold" FontSize="14" >
+                        <Run Text="Views: " />
+                        <Run Text="{Binding ElementName=Items, Path=SelectedItem.Views}" />
+                    </TextBlock>
+                </StackPanel>
+            </Grid>
         </Grid>
-        
-        <FlipView Grid.Row="1" VerticalAlignment="Stretch" x:Name="Items" ItemTemplate="{StaticResource FlipViewTemplate}"/>
+
+        <Grid Grid.Row="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="70*" />
+                <ColumnDefinition Width="30*" />
+            </Grid.ColumnDefinitions>
+            
+            <FlipView Grid.Column="0" x:Name="Items" SelectedItem="SelectedItem">
+                <FlipView.ItemTemplate>
+                    <DataTemplate>
+                        <Image Grid.Row="2" Source="{Binding Link}" Stretch="Uniform" VerticalAlignment="Center" HorizontalAlignment="Center" />
+                    </DataTemplate>
+                </FlipView.ItemTemplate>
+            </FlipView>
+        </Grid>
 
     </Grid>
 </Page>

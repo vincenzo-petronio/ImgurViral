@@ -9,6 +9,9 @@
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
     <Grid>
-        <WebView />
+        <WebView Name="webView" 
+                 VerticalAlignment="Stretch"
+                 Loaded="WebView_Loaded" 
+                 NavigationStarting="webView_NavigationStarting" />
     </Grid>
 </Page>

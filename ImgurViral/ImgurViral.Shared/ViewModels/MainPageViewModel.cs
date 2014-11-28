@@ -11,6 +11,7 @@ namespace ImgurViral.ViewModels
         private IDataService dataService;
         private Boolean progressRingIsActive;
         private List<GalleryImageData> items;
+        private GalleryImageData selectedItem;
         
         public MainPageViewModel(IDataService dataService)
         {
@@ -48,6 +49,9 @@ namespace ImgurViral.ViewModels
             }
         }
 
+        /// <summary>
+        /// Collection of items for FlipView
+        /// </summary>
         public List<GalleryImageData> Items
         {
             get
@@ -61,6 +65,26 @@ namespace ImgurViral.ViewModels
                 {
                     items = value;
                     NotifyOfPropertyChange(() => Items);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Selected item from FlipView
+        /// </summary>
+        public GalleryImageData SelectedItem
+        {
+            get
+            {
+                return selectedItem;
+            }
+
+            set
+            {
+                if (selectedItem != value)
+                {
+                    selectedItem = value;
+                    NotifyOfPropertyChange(() => SelectedItem);
                 }
             }
         }
