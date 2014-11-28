@@ -9,7 +9,10 @@
 
     <Page.Resources>
         <DataTemplate x:Name="FlipViewTemplate">
-            <TextBlock Text="{Binding Description}" />
+            <StackPanel>
+                <TextBlock Text="{Binding Description}" />
+                <Image Source="{Binding Link}" Stretch="Uniform"/>
+            </StackPanel>
         </DataTemplate>
     </Page.Resources>
     

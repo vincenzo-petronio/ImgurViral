@@ -20,13 +20,6 @@ namespace ImgurViral.Utils
             List<GalleryImageData> results = new List<GalleryImageData>();
             String uri = Constants.ENDPOINT_API_GALLERY_VIRAL;
 
-            // FAKE DATA
-            //items.Add(new GalleryImage { Title = "iojfioqenjfodwiew 8a76f9dad snfd " });
-            //items.Add(new GalleryImage { Title = "87aedfbjadc " });
-            //items.Add(new GalleryImage { Title = "3333333333333 8a76f9dad snfd " });
-            //items.Add(new GalleryImage { Title = "ANFLSDANFLSKDNC SDF  " });
-            //return items;
-
             var s = await this.DownloadData(uri);
             System.Diagnostics.Debug.WriteLine("[URI]\t{0}\n[RESPONSE]{1}", uri, s);
             try
@@ -47,43 +40,58 @@ namespace ImgurViral.Utils
             return null;
         }
 
+        /// <summary>
+        /// Get data from url
+        /// </summary>
+        /// <param name="uri"></param>
+        /// <returns></returns>
         private async Task<String> DownloadData(String uri)
         {
             var response = String.Empty;
             var httpClient = new HttpClient();
             try
             {
-                StorageFolder sFolder = Windows.Storage.ApplicationData.Current.LocalFolder;
-                StorageFile sFile = await sFolder.CreateFileAsync(Constants.AUTH_LOCALSETTINGS_FILENAME, CreationCollisionOption.OpenIfExists);
-                // READ
-                string sFileContent = null;
-                using (var sFileReader = new StreamReader(await sFile.OpenStreamForReadAsync()))
-                {
-                    sFileContent = await sFileReader.ReadToEndAsync();
-                }
+                String accessToken = await GetAccessToken();
 
-                if (sFileContent != null)
+                if (accessToken != String.Empty)
                 {
-
-                    // httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Authorization", "Client-ID " + Constants.API_CLIENTID);
-                    AuthUser jsonToAuthUser = await JsonConvert.DeserializeObjectAsync<AuthUser>(sFileContent);
-                    Debug.WriteLine("[DATASERVICE]\t" + jsonToAuthUser.AccessToken);
-                    httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Authorization", "Bearer " + jsonToAuthUser.AccessToken);
+                    httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Authorization", "Bearer " + accessToken);
                     response = await httpClient.GetStringAsync(new Uri(uri));
-                    //var content = new FormUrlEncodedContent(new[] 
-                    //    {
-                    //        new KeyValuePair<string, string>("Authorization", "Client-ID " + Constants.API_CLIENTID)
-                    //    });
-                    //var r = await httpClient.PostAsync(new Uri(uri), content);
-                    //response = r.Content.ReadAsStringAsync().Result;
+                }
+                else
+                {
+                    Debug.WriteLine("[DataService.DownloadData]\t" + "NO ACCESS TOKEN FROM LOCAL!");
                 }
             }
             catch (Exception ex)
             {
-                System.Diagnostics.Debug.WriteLine("[DataService.DownloadData] \n" + ex.ToString());
+                Debug.WriteLine("[DataService.DownloadData]\n" + ex.ToString());
             }
             
             return response;
+        }
+
+        private async Task<String> GetAccessToken()
+        {
+            String accessToken = String.Empty;
+
+            // Read local for Access Token
+            StorageFolder sFolder = Windows.Storage.ApplicationData.Current.LocalFolder;
+            StorageFile sFile = await sFolder.CreateFileAsync(Constants.AUTH_LOCALSETTINGS_FILENAME, CreationCollisionOption.OpenIfExists);
+            string sFileContent = null;
+            using (var sFileReader = new StreamReader(await sFile.OpenStreamForReadAsync()))
+            {
+                sFileContent = await sFileReader.ReadToEndAsync();
+            }
+
+            if (sFileContent != null)
+            {
+                AuthUser jsonToAuthUser = await Task.Factory.StartNew(() => JsonConvert.DeserializeObject<AuthUser>(sFileContent));
+                Debug.WriteLine("[DataService.GetAccessToken]\tAccessToken: " + jsonToAuthUser.AccessToken);
+                accessToken = jsonToAuthUser.AccessToken;
+            }
+
+            return accessToken;
         }
     }
 }

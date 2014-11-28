@@ -12,6 +12,11 @@ namespace ImgurViral.Utils
 {
     class AuthHelper
     {
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="user">AuthUser</param>
+        /// <returns>Boolean True/False se il salvataggio è andato a buon fine o meno.</returns>
         public async static Task<bool> SaveAuthData(AuthUser user)
         {
             string authUserToJson = await JsonConvert.SerializeObjectAsync(user, Formatting.Indented);
@@ -49,6 +54,36 @@ namespace ImgurViral.Utils
             }
 
             return true;
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns>AuthUser</returns>
+        public async static Task<AuthUser> ReadAuthData()
+        {
+            StorageFolder sFolder = Windows.Storage.ApplicationData.Current.LocalFolder;
+            StorageFile sFile = await sFolder.GetFileAsync(Constants.AUTH_LOCALSETTINGS_FILENAME);
+            string sFileContent = null;
+            AuthUser jsonToAuthUser = null;
+
+            using (var sFileReader = new StreamReader(await sFile.OpenStreamForReadAsync()))
+            {
+                sFileContent = await sFileReader.ReadToEndAsync();
+            }
+
+            if (sFileContent != null)
+            {
+                jsonToAuthUser = await JsonConvert.DeserializeObjectAsync<AuthUser>(sFileContent);
+                Debug.WriteLine("[AUTHHELPER]\t" +
+                    "JSON=[" + "Username=" + jsonToAuthUser.Username + ", " +
+                    "AccessToken=" + jsonToAuthUser.AccessToken + ", " +
+                    "ExpiresToken=" + jsonToAuthUser.ExpiresToken + ", " +
+                    "RefreshToken=" + jsonToAuthUser.RefreshToken + ", " +
+                    "TypeToken=" + jsonToAuthUser.TypeToken + "]");
+            }
+
+            return jsonToAuthUser;
         }
     }
 }
