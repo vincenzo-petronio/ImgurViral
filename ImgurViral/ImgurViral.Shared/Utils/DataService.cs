@@ -20,12 +20,14 @@ namespace ImgurViral.Utils
             List<GalleryImageData> results = new List<GalleryImageData>();
             String uri = Constants.ENDPOINT_API_GALLERY_VIRAL;
 
-            var s = await this.DownloadData(uri);
-            System.Diagnostics.Debug.WriteLine("[URI]\t{0}\n[RESPONSE]{1}", uri, s);
+            var response = await this.DownloadData(uri);
+            System.Diagnostics.Debug.WriteLine("[URI]\t{0}\n[RESPONSE]{1}", uri, response);
             try
             {
-                var des = JsonConvert.DeserializeObject<GalleryImage>(s);
-                foreach (var d in des.Data)
+                GalleryImage responseDeserialized = JsonConvert.DeserializeObject<GalleryImage>(response);
+                // Filtro gli item che non sono visualizzabili, esempio video o album.
+                var responseDeserializedRestricted = from item in responseDeserialized.Data where item.IsAlbum == false select item;
+                foreach (var d in responseDeserializedRestricted)
                 {
                     results.Add(d);
                 }

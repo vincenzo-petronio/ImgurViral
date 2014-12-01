@@ -3,6 +3,7 @@ using ImgurViral.Models;
 using ImgurViral.Utils;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 
 namespace ImgurViral.ViewModels
 {
@@ -12,6 +13,7 @@ namespace ImgurViral.ViewModels
         private Boolean progressRingIsActive;
         private List<GalleryImageData> items;
         private GalleryImageData selectedItem;
+        private String itemsCounter;
         
         public MainPageViewModel(IDataService dataService)
         {
@@ -85,6 +87,26 @@ namespace ImgurViral.ViewModels
                 {
                     selectedItem = value;
                     NotifyOfPropertyChange(() => SelectedItem);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Counter for the images of FlipView. 
+        /// </summary>
+        public String ItemsCounter
+        {
+            get
+            {
+                return itemsCounter;
+            }
+
+            set
+            {
+                if (itemsCounter != value)
+                {
+                    itemsCounter = value;
+                    NotifyOfPropertyChange(() => ItemsCounter);
                 }
             }
         }

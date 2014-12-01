@@ -16,28 +16,35 @@
         <Grid Grid.Row="0" Background="#FF89C624">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="120"/>
-                <ColumnDefinition Width="40*"/>
-                <ColumnDefinition Width="60*" />
+                <ColumnDefinition Width="70*"/>
+                <ColumnDefinition Width="30*" />
             </Grid.ColumnDefinitions>
 
             <Image Source="ms-appx:///Assets/imgur_logo_dot.png" Stretch="Uniform" Margin="20"/>
             <ProgressRing Grid.Column="0" IsActive="{Binding ProgressRingIsActive}" Height="40" Width="40" HorizontalAlignment="Center" />
-            <StackPanel Grid.Column="1" Margin="20" VerticalAlignment="Stretch">
-                <TextBlock Grid.Column="1" x:Uid="AppTitle" Text="" VerticalAlignment="Top" FontFamily="Segoe UI Light" FontSize="42" />
-                <TextBlock Text="{Binding ElementName=Items, Path=SelectedItem.Title}" VerticalAlignment="Bottom" FontFamily="Segoe UI Light" FontSize="20" TextWrapping="Wrap" />
-            </StackPanel>
-            <Grid Grid.Column="2" Margin="20">
-                <StackPanel Orientation="Vertical">
-                    <TextBlock FontFamily="Segoe UI Semibold" FontSize="14" >
+            <Grid Grid.Column="1" Margin="20">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="*" />
+                </Grid.RowDefinitions>
+                <TextBlock Grid.Row="0" x:Uid="AppTitle" Text="" VerticalAlignment="Top" FontFamily="Segoe UI Light" FontSize="42" />
+                <TextBlock Grid.Row="1" Text="{Binding ElementName=Items, Path=SelectedItem.Title}" VerticalAlignment="Bottom" FontFamily="Segoe UI Light" FontSize="20" TextWrapping="Wrap" TextTrimming="WordEllipsis" />
+            </Grid>
+            <StackPanel Orientation="Vertical" Grid.Column="2" Margin="20">
+                <TextBlock FontFamily="Segoe UI Semibold" FontSize="16" >
+                        <Run Text="{Binding ElementName=Items, Path=SelectedIndex, Converter={StaticResource IndexConv}}"/>
+                        <Run Text="/" />
+                        <Run Text="{Binding Items.Count}" />
+                </TextBlock>
+                <TextBlock FontFamily="Segoe UI Semibold" FontSize="14" >
                         <Run Text="Score: " />
                         <Run Text="{Binding ElementName=Items, Path=SelectedItem.Score}" />
-                    </TextBlock>
-                    <TextBlock FontFamily="Segoe UI Semibold" FontSize="14" >
+                </TextBlock>
+                <TextBlock FontFamily="Segoe UI Semibold" FontSize="14" >
                         <Run Text="Views: " />
                         <Run Text="{Binding ElementName=Items, Path=SelectedItem.Views}" />
-                    </TextBlock>
-                </StackPanel>
-            </Grid>
+                </TextBlock>
+            </StackPanel>
         </Grid>
 
         <Grid Grid.Row="1">
