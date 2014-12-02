@@ -25,8 +25,11 @@ namespace ImgurViral.Utils
             try
             {
                 GalleryImage responseDeserialized = JsonConvert.DeserializeObject<GalleryImage>(response);
-                // Filtro gli item che non sono visualizzabili, esempio video o album.
-                var responseDeserializedRestricted = from item in responseDeserialized.Data where item.IsAlbum == false select item;
+                // Filtro gli item che non sono visualizzabili, esempio video o album o GIF.
+                var responseDeserializedRestricted = from item in responseDeserialized.Data 
+                                                     where item.IsAlbum == false 
+                                                     && !item.Type.Contains("gif") 
+                                                     select item;
                 foreach (var d in responseDeserializedRestricted)
                 {
                     results.Add(d);
