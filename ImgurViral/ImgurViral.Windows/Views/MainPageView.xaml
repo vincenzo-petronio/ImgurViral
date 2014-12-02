@@ -56,7 +56,9 @@
             <FlipView Grid.Column="0" x:Name="Items" SelectedItem="SelectedItem" IsTabStop="True">
                 <FlipView.ItemTemplate>
                     <DataTemplate>
-                        <Image Grid.Row="2" Source="{Binding Link}" Stretch="Uniform" VerticalAlignment="Center" HorizontalAlignment="Center" />
+                        <ScrollViewer ZoomMode="Enabled" VerticalScrollBarVisibility="Hidden" MinZoomFactor="0.5" MaxZoomFactor="1.5" VerticalScrollMode="Auto" HorizontalScrollMode="Disabled" >
+                            <Image Grid.Row="2" Source="{Binding Link}" Stretch="Uniform" VerticalAlignment="Center" HorizontalAlignment="Center" />
+                        </ScrollViewer>
                     </DataTemplate>
                 </FlipView.ItemTemplate>
             </FlipView>
