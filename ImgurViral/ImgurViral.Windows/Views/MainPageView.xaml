@@ -53,7 +53,7 @@
                 <ColumnDefinition Width="30*" />
             </Grid.ColumnDefinitions>
             
-            <FlipView Grid.Column="0" x:Name="Items" SelectedItem="SelectedItem">
+            <FlipView Grid.Column="0" x:Name="Items" SelectedItem="SelectedItem" IsTabStop="True">
                 <FlipView.ItemTemplate>
                     <DataTemplate>
                         <Image Grid.Row="2" Source="{Binding Link}" Stretch="Uniform" VerticalAlignment="Center" HorizontalAlignment="Center" />
