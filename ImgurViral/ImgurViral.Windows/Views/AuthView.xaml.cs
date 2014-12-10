@@ -21,16 +21,9 @@ using Windows.UI.Xaml.Navigation;
 namespace ImgurViral.Views
 {
     /// <summary>
-    /// Pagina vuota che può essere utilizzata autonomamente oppure esplorata all'interno di un frame.
     /// </summary>
     public sealed partial class AuthView : Page
     {
-        private const String AUTH_ACCESS_TOKEN = "access_token";
-        private const String AUTH_EXPIRES = "expires_in";
-        private const String AUTH_TYPE = "token_type";
-        private const String AUTH_REFRESH = "refresh_token";
-        private const String AUTH_ACCOUNT = "account_username";
-
         public AuthView()
         {
             this.InitializeComponent();
@@ -65,37 +58,10 @@ namespace ImgurViral.Views
             // Response: http://example.com#access_token=ACCESS_TOKEN&token_type=Bearer&expires_in=3600
             string uriToString = args.Uri.ToString();
             Debug.WriteLine("[AuthView.webView_NavigationStarting]\t" + uriToString);
-            if (uriToString.Contains(AUTH_ACCESS_TOKEN))
+            if (uriToString.Contains(Constants.AUTH_ACCESS_TOKEN))
             {
-                AuthUser authUser = new AuthUser();
-                int indexOfSharp = uriToString.IndexOf("#");
-                string query = uriToString.Substring(indexOfSharp + 1, uriToString.Length - indexOfSharp - 1);
-
-                authUser.AccessToken = query.Split('&')
-                                .Where(s => s.Split('=')[0] == AUTH_ACCESS_TOKEN)
-                                .Select(s => s.Split('=')[1])
-                                .FirstOrDefault();
-
-                authUser.RefreshToken = query.Split('&')
-                                        .Where(s => s.Split('=')[0] == AUTH_REFRESH)
-                                        .Select(s => s.Split('=')[1])
-                                        .FirstOrDefault();
-
-                authUser.Username = query.Split('&')
-                                        .Where(s => s.Split('=')[0] == AUTH_ACCOUNT)
-                                        .Select(s => s.Split('=')[1])
-                                        .FirstOrDefault();
-
-                authUser.ExpiresToken = query.Split('&')
-                                        .Where(s => s.Split('=')[0] == AUTH_EXPIRES)
-                                        .Select(s => s.Split('=')[1])
-                                        .FirstOrDefault();
-
-                authUser.TypeToken = query.Split('&')
-                                        .Where(s => s.Split('=')[0] == AUTH_TYPE)
-                                        .Select(s => s.Split('=')[1])
-                                        .FirstOrDefault();
-
+                AuthUser authUser = await AuthHelper.CreateAuthUser(uriToString, true);
+                
                 if (await AuthHelper.SaveAuthData(authUser))
                 {
                     Frame.Navigate(typeof(MainPageView));

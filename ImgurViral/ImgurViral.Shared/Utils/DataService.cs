@@ -12,6 +12,9 @@ using System.Diagnostics;
 
 namespace ImgurViral.Utils
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public class DataService : IDataService
     {
         public async Task<List<GalleryImageData>> getGalleryImage(Action<List<GalleryImageData>, Exception> callback)
@@ -19,25 +22,30 @@ namespace ImgurViral.Utils
             Exception exception = null;
             List<GalleryImageData> results = new List<GalleryImageData>();
             String uri = Constants.ENDPOINT_API_GALLERY_VIRAL;
+            var response = String.Empty;
 
-            var response = await this.DownloadData(uri);
+            response = await this.DownloadData(uri);
             System.Diagnostics.Debug.WriteLine("[URI]\t{0}\n[RESPONSE]{1}", uri, response);
-            try
+
+            if (!String.IsNullOrEmpty(response))
             {
-                GalleryImage responseDeserialized = JsonConvert.DeserializeObject<GalleryImage>(response);
-                // Filtro gli item che non sono visualizzabili, esempio video o album o GIF.
-                var responseDeserializedRestricted = from item in responseDeserialized.Data 
-                                                     where item.IsAlbum == false 
-                                                     && !item.Type.Contains("gif") 
-                                                     select item;
-                foreach (var d in responseDeserializedRestricted)
+                try
                 {
-                    results.Add(d);
+                    GalleryImage responseDeserialized = JsonConvert.DeserializeObject<GalleryImage>(response);
+                    // Filtro gli item che non sono visualizzabili, esempio video o album o GIF.
+                    var responseDeserializedRestricted = from item in responseDeserialized.Data
+                                                         where item.IsAlbum == false
+                                                         && !item.Type.Contains("gif")
+                                                         select item;
+                    foreach (var d in responseDeserializedRestricted)
+                    {
+                        results.Add(d);
+                    }
                 }
-            } 
-            catch(Exception e)
-            {
-                System.Diagnostics.Debug.WriteLine("[DataService.getGalleryImage] \n" + e.ToString());
+                catch (Exception e)
+                {
+                    System.Diagnostics.Debug.WriteLine("[DataService.getGalleryImage] \n" + e.ToString());
+                }
             }
 
             callback(results, exception);
@@ -53,50 +61,98 @@ namespace ImgurViral.Utils
         private async Task<String> DownloadData(String uri)
         {
             var response = String.Empty;
-            var httpClient = new HttpClient();
+            HttpResponseMessage httpResponseMessage;
+            HttpClient httpClient = new HttpClient();
+            AuthUser authUser;
+
             try
             {
-                String accessToken = await GetAccessToken();
-
-                if (accessToken != String.Empty)
+                authUser = await AuthHelper.ReadAuthData();
+                if (null != authUser && !String.IsNullOrEmpty(authUser.AccessToken) && !String.IsNullOrEmpty(authUser.RefreshToken))
                 {
-                    httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Authorization", "Bearer " + accessToken);
-                    response = await httpClient.GetStringAsync(new Uri(uri));
+                    httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Authorization", "Bearer " + authUser.AccessToken);
+                    httpResponseMessage = await httpClient.GetAsync(new Uri(uri));
+                    if (httpResponseMessage.IsSuccessStatusCode)
+                    {
+                        response = await httpResponseMessage.Content.ReadAsStringAsync();
+                    }
+                    else if(httpResponseMessage.StatusCode == System.Net.HttpStatusCode.Forbidden)
+                    {
+                        Debug.WriteLine("[DataService.DownloadData]\t" + "HttpStatusCode 403");
+
+                        bool isNewToken = await RefreshAccessToken(authUser.RefreshToken);
+                        if (isNewToken)
+                        {
+                            authUser = await AuthHelper.ReadAuthData();
+                            if (null != authUser && !String.IsNullOrEmpty(authUser.AccessToken) && !String.IsNullOrEmpty(authUser.RefreshToken))
+                            {
+                                httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Authorization", "Bearer " + authUser.AccessToken);
+                                httpResponseMessage = await httpClient.GetAsync(new Uri(uri));
+                                if (httpResponseMessage.IsSuccessStatusCode)
+                                {
+                                    response = await httpResponseMessage.Content.ReadAsStringAsync();
+                                }
+                            }
+                        }
+                    }
                 }
                 else
                 {
                     Debug.WriteLine("[DataService.DownloadData]\t" + "NO ACCESS TOKEN FROM LOCAL!");
                 }
             }
+            catch (HttpRequestException hre)
+            {
+                Debug.WriteLine("[DataService.DownloadData]\t" + "HttpRequestException\n" + hre.ToString());
+            }
             catch (Exception ex)
             {
-                Debug.WriteLine("[DataService.DownloadData]\n" + ex.ToString());
+                Debug.WriteLine("[DataService.DownloadData]\t" + "Exception\n" + ex.ToString());
             }
             
             return response;
         }
 
-        private async Task<String> GetAccessToken()
+        /// <summary>
+        /// Ottiene un nuovo Access Token attraverso il Refresh Token, e memorizza i nuovi dati in locale.
+        /// </summary>
+        /// <param name="refreshToken">String</param>
+        /// <returns>bool</returns>
+        public async static Task<bool> RefreshAccessToken(String refreshToken)
         {
-            String accessToken = String.Empty;
+            var response = String.Empty;
+            HttpResponseMessage httpResponseMessage;
+            HttpClient httpClient = new HttpClient();
 
-            // Read local for Access Token
-            StorageFolder sFolder = Windows.Storage.ApplicationData.Current.LocalFolder;
-            StorageFile sFile = await sFolder.CreateFileAsync(Constants.AUTH_LOCALSETTINGS_FILENAME, CreationCollisionOption.OpenIfExists);
-            string sFileContent = null;
-            using (var sFileReader = new StreamReader(await sFile.OpenStreamForReadAsync()))
+            // QUERYSTRING
+            var values = new Dictionary<string, string>();
+            values.Add(Constants.AUTH_REFRESH, refreshToken);
+            values.Add(Constants.AUTH_CLIENT_ID, Constants.API_CLIENTID);
+            values.Add(Constants.AUTH_CLIENT_SECRET, Constants.API_SECRET);
+            values.Add(Constants.AUTH_GRANT_TYPE, "refresh_token");
+            var content = new FormUrlEncodedContent(values);
+
+            httpResponseMessage = await httpClient.PostAsync(new Uri(Constants.ENDPOINT_API_REFRESH_BASE), content);
+
+            if (httpResponseMessage.IsSuccessStatusCode)
             {
-                sFileContent = await sFileReader.ReadToEndAsync();
+                response = await httpResponseMessage.Content.ReadAsStringAsync();
+                Debug.WriteLine("[DataService.RefreshAccessToken]\t" + httpResponseMessage.StatusCode + " New Access Token: " + response);
+                AuthUser authUser = await AuthHelper.CreateAuthUser(response, false);
+                bool isSaved = await AuthHelper.SaveAuthData(authUser);
+                if (isSaved)
+                {
+                    Debug.WriteLine("[DataService.RefreshAccessToken]\t" + "New Access Token stored!");
+                    return true;
+                }
+            }
+            else
+            {
+
+                Debug.WriteLine("[DataService.RefreshAccessToken]\t" + httpResponseMessage.StatusCode + " Error New Access Token: " + response);
             }
 
-            if (sFileContent != null)
-            {
-                AuthUser jsonToAuthUser = await Task.Factory.StartNew(() => JsonConvert.DeserializeObject<AuthUser>(sFileContent));
-                Debug.WriteLine("[DataService.GetAccessToken]\tAccessToken: " + jsonToAuthUser.AccessToken);
-                accessToken = jsonToAuthUser.AccessToken;
-            }
-
-            return accessToken;
+            return false;
         }
     }
 }

@@ -22,10 +22,10 @@ namespace ImgurViral.ViewModels
             this.items = new List<GalleryImageData>();
         }
 
-        protected override async void OnActivate()
+        protected override void OnActivate()
         {
             base.OnActivate();
-            await this.dataService.getGalleryImage((gallery, err) => {
+            this.dataService.getGalleryImage((gallery, err) => {
                 if (gallery != null)
                 {
                     this.Items = gallery;
