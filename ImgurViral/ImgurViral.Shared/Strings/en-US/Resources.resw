@@ -120,4 +120,7 @@
   <data name="AppTitle.Text" xml:space="preserve">
     <value>Imgur Viral</value>
   </data>
+  <data name="msg_connection_error" xml:space="preserve">
+    <value>oops... there is some problem. Try to check your connection!</value>
+  </data>
 </root>

@@ -1,11 +1,9 @@
 ﻿using ImgurViral.Models;
 using Newtonsoft.Json;
 using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Net.Http;
 using System.Threading.Tasks;
 using Windows.Storage;
 
@@ -25,7 +23,7 @@ namespace ImgurViral.Utils
             if (isQueryString)
             {
                 int indexOfSharp = raw.IndexOf("#");
-                string query = raw.Substring(indexOfSharp + 1, raw.Length - indexOfSharp - 1);
+                String query = raw.Substring(indexOfSharp + 1, raw.Length - indexOfSharp - 1);
 
                 authUser.AccessToken = query.Split('&')
                     .Where(s => s.Split('=')[0] == Constants.AUTH_ACCESS_TOKEN)
@@ -81,40 +79,45 @@ namespace ImgurViral.Utils
         /// <returns>Boolean True/False se il salvataggio è andato a buon fine o meno.</returns>
         public async static Task<bool> SaveAuthData(AuthUser user)
         {
-            string authUserToJson = await Task.Factory.StartNew(() => JsonConvert.SerializeObject(user, Formatting.Indented));
+            String authUserToJson = await Task.Factory.StartNew(() => JsonConvert.SerializeObject(user, Formatting.Indented));
+            Debug.WriteLine("[AuthHelper.SaveAuthData]\t" + authUserToJson);
 
             StorageFolder sFolder = Windows.Storage.ApplicationData.Current.LocalFolder;
             StorageFile sFile = await sFolder.CreateFileAsync(Constants.AUTH_LOCALSETTINGS_FILENAME, CreationCollisionOption.ReplaceExisting);
-            
+
             // WRITE
-            using(var sWriter = new StreamWriter(await sFile.OpenStreamForWriteAsync())) 
+            using (var sWriter = new StreamWriter(await sFile.OpenStreamForWriteAsync()))
             {
-                Debug.WriteLine("[AuthHelper.SaveAuthData]\t" + authUserToJson);
                 await sWriter.WriteAsync(authUserToJson);
                 await sWriter.FlushAsync();
             }
 
             // READ
-            string sFileContent = null;
-            using (var sFileReader = new StreamReader(await sFile.OpenStreamForReadAsync()))
+            String sFileContent;
+            using (var sReader = new StreamReader(await sFile.OpenStreamForReadAsync()))
             {
-                sFileContent = await sFileReader.ReadToEndAsync();
+                sFileContent = await sReader.ReadToEndAsync();
             }
 
-            if (sFileContent != null)
-            {
-                AuthUser jsonToAuthUser = await Task.Factory.StartNew(() => JsonConvert.DeserializeObject<AuthUser>(sFileContent));
-                //Debug.WriteLine("[AUTHHELPER]\t" +
-                //    "JSON=[" + "Username=" + jsonToAuthUser.Username + ", " +
-                //    "AccessToken=" + jsonToAuthUser.AccessToken + ", " +
-                //    "ExpiresToken=" + jsonToAuthUser.ExpiresToken + ", " +
-                //    "RefreshToken=" + jsonToAuthUser.RefreshToken + ", " +
-                //    "TypeToken=" + jsonToAuthUser.TypeToken + "]");
-            }
-            else
+            if (String.IsNullOrEmpty(sFileContent))
             {
                 return false;
             }
+
+            //if (sFileContent != null)
+            //{
+            //    AuthUser jsonToAuthUser = await Task.Factory.StartNew(() => JsonConvert.DeserializeObject<AuthUser>(sFileContent));
+            //    Debug.WriteLine("[AUTHHELPER]\t" +
+            //        "JSON=[" + "Username=" + jsonToAuthUser.Username + ", " +
+            //        "AccessToken=" + jsonToAuthUser.AccessToken + ", " +
+            //        "ExpiresToken=" + jsonToAuthUser.ExpiresToken + ", " +
+            //        "RefreshToken=" + jsonToAuthUser.RefreshToken + ", " +
+            //        "TypeToken=" + jsonToAuthUser.TypeToken + "]");
+            //}
+            //else
+            //{
+            //    return false;
+            //}
 
             return true;
         }
@@ -127,12 +130,12 @@ namespace ImgurViral.Utils
         {
             StorageFolder sFolder = Windows.Storage.ApplicationData.Current.LocalFolder;
             StorageFile sFile = await sFolder.GetFileAsync(Constants.AUTH_LOCALSETTINGS_FILENAME);
-            string sFileContent = null;
+            String sFileContent = null;
             AuthUser jsonToAuthUser = null;
 
-            using (var sFileReader = new StreamReader(await sFile.OpenStreamForReadAsync()))
+            using (var sReader = new StreamReader(await sFile.OpenStreamForReadAsync()))
             {
-                sFileContent = await sFileReader.ReadToEndAsync();
+                sFileContent = await sReader.ReadToEndAsync();
             }
 
             if (sFileContent != null)
@@ -143,6 +146,5 @@ namespace ImgurViral.Utils
             return jsonToAuthUser;
         }
 
-        
     }
 }

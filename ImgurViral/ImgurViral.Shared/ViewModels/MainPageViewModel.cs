@@ -4,6 +4,8 @@ using ImgurViral.Utils;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using Windows.ApplicationModel.Resources;
+using Windows.UI.Popups;
 
 namespace ImgurViral.ViewModels
 {
@@ -25,11 +27,20 @@ namespace ImgurViral.ViewModels
         protected override void OnActivate()
         {
             base.OnActivate();
-            this.dataService.getGalleryImage((gallery, err) => {
-                if (gallery != null)
+            this.dataService.getGalleryImage(async (gallery, err) => {
+                ProgressRingIsActive = false;
+                if (err == null)
                 {
                     this.Items = gallery;
-                    ProgressRingIsActive = false;
+                }
+                else
+                {
+                    var resourceLoader = new ResourceLoader();
+                    var dialog = new MessageDialog(resourceLoader.GetString("msg_connection_error"));
+                    dialog.Commands.Add(new UICommand("OK", 
+                        new UICommandInvokedHandler((s) => { CaliburnApplication.Current.Exit(); })));
+                    await dialog.ShowAsync();
+                    CaliburnApplication.Current.Exit();
                 }
             });
         }

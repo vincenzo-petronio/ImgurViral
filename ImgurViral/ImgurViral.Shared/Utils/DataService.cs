@@ -9,6 +9,7 @@ using System.Linq;
 using Windows.Storage;
 using System.IO;
 using System.Diagnostics;
+using ImgurViral.Exceptions;
 
 namespace ImgurViral.Utils
 {
@@ -17,6 +18,11 @@ namespace ImgurViral.Utils
     /// </summary>
     public class DataService : IDataService
     {
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="callback"></param>
+        /// <returns></returns>
         public async Task<List<GalleryImageData>> getGalleryImage(Action<List<GalleryImageData>, Exception> callback)
         {
             Exception exception = null;
@@ -24,29 +30,36 @@ namespace ImgurViral.Utils
             String uri = Constants.ENDPOINT_API_GALLERY_VIRAL;
             var response = String.Empty;
 
-            response = await this.DownloadData(uri);
-            System.Diagnostics.Debug.WriteLine("[URI]\t{0}\n[RESPONSE]{1}", uri, response);
-
-            if (!String.IsNullOrEmpty(response))
+            try
             {
-                try
+                response = await this.DownloadData(uri);
+                
+                if (String.IsNullOrEmpty(response))
                 {
-                    GalleryImage responseDeserialized = JsonConvert.DeserializeObject<GalleryImage>(response);
-                    // Filtro gli item che non sono visualizzabili, esempio video o album o GIF.
-                    var responseDeserializedRestricted = from item in responseDeserialized.Data
-                                                         where item.IsAlbum == false
-                                                         && !item.Type.Contains("gif")
-                                                         select item;
-                    foreach (var d in responseDeserializedRestricted)
-                    {
-                        results.Add(d);
-                    }
+                    throw new ArgumentNullException();
                 }
-                catch (Exception e)
+                    
+                GalleryImage responseDeserialized = JsonConvert.DeserializeObject<GalleryImage>(response);
+                // Filtro gli item che non sono visualizzabili, esempio video o album o GIF.
+                var responseDeserializedRestricted = from item in responseDeserialized.Data
+                                                        where item.IsAlbum == false
+                                                        && !item.Type.Contains("gif")
+                                                        select item;
+                foreach (var d in responseDeserializedRestricted)
                 {
-                    System.Diagnostics.Debug.WriteLine("[DataService.getGalleryImage] \n" + e.ToString());
+                    results.Add(d);
                 }
             }
+            catch (NetworkException ne)
+            {
+                exception = ne;
+            }
+            catch (ArgumentNullException ane)
+            {
+                exception = ane;
+            }
+
+            System.Diagnostics.Debug.WriteLine("[URI]\t{0}\n[RESPONSE]{1}\n\n", uri, response);
 
             callback(results, exception);
 
@@ -64,6 +77,11 @@ namespace ImgurViral.Utils
             HttpResponseMessage httpResponseMessage;
             HttpClient httpClient = new HttpClient();
             AuthUser authUser;
+
+            if (!NetworkHelper.CheckConnectivity())
+            {
+                throw new NetworkException("NO_NET");
+            }
 
             try
             {

@@ -17,6 +17,7 @@
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Constants.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Converters\Index0To1BasedConverter.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Exceptions\NetworkException.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Models\AuthUser.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Models\Error.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Models\GalleryAlbum.cs" />
@@ -28,6 +29,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Utils\AuthHelper.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utils\DataService.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utils\IDataService.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utils\NetworkHelper.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ViewModels\AuthViewModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ViewModels\MainPageViewModel.cs" />
   </ItemGroup>
