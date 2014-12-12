@@ -5,6 +5,7 @@
     xmlns:converters="using:ImgurViral.Converters">
     
     <!-- CONVERTERS -->
-    <converters:Index0To1BasedConverter x:Key="IndexConv"/>
+    <converters:Index0To1BasedConverter x:Key="IndexConv" />
+    <converters:BooleanToVisibilityConverter x:Key="BoolToVisConv" />
     
 </ResourceDictionary>

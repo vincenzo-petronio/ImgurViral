@@ -16,6 +16,7 @@
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Constants.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Converters\BooleanToVisibilityConverter.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Converters\Index0To1BasedConverter.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Exceptions\NetworkException.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Models\AuthUser.cs" />

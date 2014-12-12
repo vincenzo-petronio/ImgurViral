@@ -141,10 +141,22 @@ namespace ImgurViral.Utils
             if (sFileContent != null)
             {
                 jsonToAuthUser = await Task.Factory.StartNew(() => JsonConvert.DeserializeObject<AuthUser>(sFileContent));
+                Debug.WriteLine("[AuthHelper.ReadAuthData]\t" + jsonToAuthUser.Username);
             }
 
             return jsonToAuthUser;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
+        public async static Task DeleteAuthData()
+        {
+            StorageFolder sFolder = Windows.Storage.ApplicationData.Current.LocalFolder;
+            StorageFile sFile = await sFolder.GetFileAsync(Constants.AUTH_LOCALSETTINGS_FILENAME);
+            await sFile.DeleteAsync();
+            Debug.WriteLine("[AuthHelper.DeleteAuthData]\t" + "Deleted!");
+        }
     }
 }

@@ -16,12 +16,16 @@ namespace ImgurViral.ViewModels
         private List<GalleryImageData> items;
         private GalleryImageData selectedItem;
         private String itemsCounter;
+        private ResourceLoader resourceLoader;
+        private Boolean isLogoutVisible;
         
         public MainPageViewModel(IDataService dataService)
         {
             this.dataService = dataService;
             this.progressRingIsActive = true;
             this.items = new List<GalleryImageData>();
+            this.resourceLoader = new ResourceLoader();
+            this.isLogoutVisible = true;
         }
 
         protected override void OnActivate()
@@ -35,12 +39,10 @@ namespace ImgurViral.ViewModels
                 }
                 else
                 {
-                    var resourceLoader = new ResourceLoader();
                     var dialog = new MessageDialog(resourceLoader.GetString("msg_connection_error"));
                     dialog.Commands.Add(new UICommand("OK", 
                         new UICommandInvokedHandler((s) => { CaliburnApplication.Current.Exit(); })));
                     await dialog.ShowAsync();
-                    CaliburnApplication.Current.Exit();
                 }
             });
         }
@@ -58,6 +60,23 @@ namespace ImgurViral.ViewModels
                 {
                     progressRingIsActive = value;
                     NotifyOfPropertyChange(() => ProgressRingIsActive);
+                }
+            }
+        }
+
+        public Boolean IsLogoutVisible
+        {
+            get
+            {
+                return isLogoutVisible;
+            }
+
+            set
+            {
+                if (isLogoutVisible != value)
+                {
+                    IsLogoutVisible = value;
+                    NotifyOfPropertyChange(() => IsLogoutVisible);
                 }
             }
         }
@@ -120,6 +139,12 @@ namespace ImgurViral.ViewModels
                     NotifyOfPropertyChange(() => ItemsCounter);
                 }
             }
+        }
+
+        public async void Logout()
+        {
+            await AuthHelper.DeleteAuthData();
+            CaliburnApplication.Current.Exit();
         }
     }
 }

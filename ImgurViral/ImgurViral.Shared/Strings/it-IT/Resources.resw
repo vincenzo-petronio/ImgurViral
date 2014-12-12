@@ -123,4 +123,7 @@
   <data name="msg_connection_error" xml:space="preserve">
     <value>Nooo... c'è qualche problema. Prova a verificare la tua connessione! </value>
   </data>
+  <data name="msg_logout.Text" xml:space="preserve">
+    <value>Ehi, torna presto!</value>
+  </data>
 </root>
