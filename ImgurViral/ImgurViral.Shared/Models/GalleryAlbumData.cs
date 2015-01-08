@@ -37,6 +37,8 @@ namespace ImgurViral.Models
         public Boolean IsFavorite { get; set; }
         [JsonProperty(PropertyName = "nsfw")]
         public Boolean IsNsfw { get; set; }
+        [JsonProperty(PropertyName = "comment_count")]
+        public Int32 CommentCount { get; set; }
         [JsonProperty(PropertyName = "images_count")]
         public Int32 ImagesCount { get; set; }
         public List<ImageData> Images { get; set; }
