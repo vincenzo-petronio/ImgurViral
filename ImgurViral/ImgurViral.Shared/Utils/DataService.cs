@@ -33,12 +33,7 @@ namespace ImgurViral.Utils
             try
             {
                 response = await this.DownloadData(uri);
-                
-                if (String.IsNullOrEmpty(response))
-                {
-                    throw new ArgumentNullException();
-                }
-                    
+
                 GalleryImage responseDeserialized = JsonConvert.DeserializeObject<GalleryImage>(response);
                 // Filtro gli item che non sono visualizzabili, esempio video o album o GIF.
                 var responseDeserializedRestricted = from item in responseDeserialized.Data
@@ -57,6 +52,12 @@ namespace ImgurViral.Utils
             catch (ArgumentNullException ane)
             {
                 exception = ane;
+            }
+            catch (ApiException ae)
+            {
+                response = ae.Msg;
+                ApiError error = JsonConvert.DeserializeObject<ApiError>(response);
+                exception = ae;
             }
 
             System.Diagnostics.Debug.WriteLine("[URI]\t{0}\n[RESPONSE]{1}\n\n", uri, response);
@@ -83,50 +84,128 @@ namespace ImgurViral.Utils
                 throw new NetworkException("NO_NET");
             }
 
+            authUser = await AuthHelper.ReadAuthData();
+            if (null == authUser || String.IsNullOrEmpty(authUser.AccessToken) || String.IsNullOrEmpty(authUser.RefreshToken))
+            {
+                throw new ArgumentNullException("NO_LOCAL_TOKEN");
+            }
+
             try
             {
-                authUser = await AuthHelper.ReadAuthData();
-                if (null != authUser && !String.IsNullOrEmpty(authUser.AccessToken) && !String.IsNullOrEmpty(authUser.RefreshToken))
-                {
-                    httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Authorization", "Bearer " + authUser.AccessToken);
-                    httpResponseMessage = await httpClient.GetAsync(new Uri(uri));
-                    if (httpResponseMessage.IsSuccessStatusCode)
-                    {
-                        response = await httpResponseMessage.Content.ReadAsStringAsync();
-                    }
-                    else if(httpResponseMessage.StatusCode == System.Net.HttpStatusCode.Forbidden)
-                    {
-                        Debug.WriteLine("[DataService.DownloadData]\t" + "HttpStatusCode 403");
+                httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Authorization", "Bearer " + authUser.AccessToken);
+                httpResponseMessage = await httpClient.GetAsync(new Uri(uri));
+                response = await httpResponseMessage.Content.ReadAsStringAsync();
+            }
+            catch (ArgumentNullException ane)
+            {
+                throw new ArgumentNullException("BAD_GET_URI");
+            }
 
-                        bool isNewToken = await RefreshAccessToken(authUser.RefreshToken);
-                        if (isNewToken)
+            switch (httpResponseMessage.StatusCode)
+            {
+                case System.Net.HttpStatusCode.OK :
+                {
+                    // 200
+                    Debug.WriteLine("[DataService.DownloadData]\t" + "HttpStatusCode 200 - OK");
+                    break;
+                }
+                case System.Net.HttpStatusCode.BadRequest:
+                {
+                    // 400
+                    Debug.WriteLine("[DataService.DownloadData]\t" + "HttpStatusCode 400 - BadRequest");
+                    throw new ApiException(response);
+                }
+                case System.Net.HttpStatusCode.Unauthorized:
+                {
+                    // 401
+                    Debug.WriteLine("[DataService.DownloadData]\t" + "HttpStatusCode 401 - Unauthorized");
+                    throw new ApiException(response);
+                }
+                case System.Net.HttpStatusCode.Forbidden:
+                {
+                    // 403
+                    Debug.WriteLine("[DataService.DownloadData]\t" + "HttpStatusCode 403 - Forbidden");
+                    bool isNewToken = await RefreshAccessToken(authUser.RefreshToken);
+                    if (isNewToken)
+                    {
+                        authUser = await AuthHelper.ReadAuthData();
+                        if (null != authUser && !String.IsNullOrEmpty(authUser.AccessToken) && !String.IsNullOrEmpty(authUser.RefreshToken))
                         {
-                            authUser = await AuthHelper.ReadAuthData();
-                            if (null != authUser && !String.IsNullOrEmpty(authUser.AccessToken) && !String.IsNullOrEmpty(authUser.RefreshToken))
+                            httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Authorization", "Bearer " + authUser.AccessToken);
+                            httpResponseMessage = await httpClient.GetAsync(new Uri(uri));
+                            if (httpResponseMessage.IsSuccessStatusCode)
                             {
-                                httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Authorization", "Bearer " + authUser.AccessToken);
-                                httpResponseMessage = await httpClient.GetAsync(new Uri(uri));
-                                if (httpResponseMessage.IsSuccessStatusCode)
-                                {
-                                    response = await httpResponseMessage.Content.ReadAsStringAsync();
-                                }
+                                response = await httpResponseMessage.Content.ReadAsStringAsync();
                             }
                         }
                     }
+                    break;
                 }
-                else
+                case System.Net.HttpStatusCode.NotFound:
                 {
-                    Debug.WriteLine("[DataService.DownloadData]\t" + "NO ACCESS TOKEN FROM LOCAL!");
+                    // 404
+                    Debug.WriteLine("[DataService.DownloadData]\t" + "HttpStatusCode 404 - NotFound");
+                    throw new ApiException(response);
+                }
+                //case "429":
+                //{
+                //    // 429 Rate Limiting
+                //    Debug.WriteLine("[DataService.DownloadData]\t" + "HttpStatusCode 429 - Rate Limiting");
+                //    break;
+                //}
+                case System.Net.HttpStatusCode.InternalServerError:
+                {
+                    // 500
+                    Debug.WriteLine("[DataService.DownloadData]\t" + "HttpStatusCode 500 - InternalServerError");
+                    throw new ApiException(response);
                 }
             }
-            catch (HttpRequestException hre)
-            {
-                Debug.WriteLine("[DataService.DownloadData]\t" + "HttpRequestException\n" + hre.ToString());
-            }
-            catch (Exception ex)
-            {
-                Debug.WriteLine("[DataService.DownloadData]\t" + "Exception\n" + ex.ToString());
-            }
+
+            //try
+            //{
+            //    authUser = await AuthHelper.ReadAuthData();
+            //    if (null != authUser && !String.IsNullOrEmpty(authUser.AccessToken) && !String.IsNullOrEmpty(authUser.RefreshToken))
+            //    {
+            //        httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Authorization", "Bearer " + authUser.AccessToken);
+            //        httpResponseMessage = await httpClient.GetAsync(new Uri(uri));
+            //        if (httpResponseMessage.IsSuccessStatusCode)
+            //        {
+            //            response = await httpResponseMessage.Content.ReadAsStringAsync();
+            //        }
+            //        else if(httpResponseMessage.StatusCode == System.Net.HttpStatusCode.Forbidden)
+            //        {
+            //            Debug.WriteLine("[DataService.DownloadData]\t" + "HttpStatusCode 403");
+
+            //            bool isNewToken = await RefreshAccessToken(authUser.RefreshToken);
+            //            if (isNewToken)
+            //            {
+            //                authUser = await AuthHelper.ReadAuthData();
+            //                if (null != authUser && !String.IsNullOrEmpty(authUser.AccessToken) && !String.IsNullOrEmpty(authUser.RefreshToken))
+            //                {
+            //                    httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Authorization", "Bearer " + authUser.AccessToken);
+            //                    httpResponseMessage = await httpClient.GetAsync(new Uri(uri));
+            //                    if (httpResponseMessage.IsSuccessStatusCode)
+            //                    {
+            //                        response = await httpResponseMessage.Content.ReadAsStringAsync();
+            //                    }
+            //                }
+            //            }
+            //        }
+            //    }
+            //    else
+            //    {
+            //        Debug.WriteLine("[DataService.DownloadData]\t" + "NO ACCESS TOKEN FROM LOCAL!");
+            //        throw new ArgumentNullException();
+            //    }
+            //}
+            //catch (HttpRequestException hre)
+            //{
+            //    Debug.WriteLine("[DataService.DownloadData]\t" + "HttpRequestException\n" + hre.ToString());
+            //}
+            //catch (Exception ex)
+            //{
+            //    Debug.WriteLine("[DataService.DownloadData]\t" + "Exception\n" + ex.ToString());
+            //}
             
             return response;
         }
@@ -150,11 +229,18 @@ namespace ImgurViral.Utils
             values.Add(Constants.AUTH_GRANT_TYPE, "refresh_token");
             var content = new FormUrlEncodedContent(values);
 
-            httpResponseMessage = await httpClient.PostAsync(new Uri(Constants.ENDPOINT_API_REFRESH_BASE), content);
+            try
+            {
+                httpResponseMessage = await httpClient.PostAsync(new Uri(Constants.ENDPOINT_API_REFRESH_BASE), content);
+                response = await httpResponseMessage.Content.ReadAsStringAsync();
+            }
+            catch (ArgumentNullException)
+            {
+                throw new ArgumentNullException("BAD_POST_URI");
+            }
 
             if (httpResponseMessage.IsSuccessStatusCode)
             {
-                response = await httpResponseMessage.Content.ReadAsStringAsync();
                 Debug.WriteLine("[DataService.RefreshAccessToken]\t" + httpResponseMessage.StatusCode + " New Access Token: " + response);
                 AuthUser authUser = await AuthHelper.CreateAuthUser(response, false);
                 bool isSaved = await AuthHelper.SaveAuthData(authUser);
@@ -166,7 +252,6 @@ namespace ImgurViral.Utils
             }
             else
             {
-
                 Debug.WriteLine("[DataService.RefreshAccessToken]\t" + httpResponseMessage.StatusCode + " Error New Access Token: " + response);
             }
 

@@ -60,7 +60,6 @@
                         </Flyout>
                     </AppBarButton.Flyout>
                 </AppBarButton>
-                <!--<AppBarButton Label="Logout" Icon="Remove" Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center"  Visibility="{Binding IsLogoutVisible, Converter={StaticResource BoolToVisConv}}" Name="Logout"/>-->
             </Grid>
         </Grid>
 

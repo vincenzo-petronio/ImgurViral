@@ -18,9 +18,10 @@
     <Compile Include="$(MSBuildThisFileDirectory)Constants.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Converters\BooleanToVisibilityConverter.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Converters\Index0To1BasedConverter.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Exceptions\ApiException.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Exceptions\NetworkException.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Models\AuthUser.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Models\Error.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Models\ApiError.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Models\GalleryAlbum.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Models\GalleryAlbumData.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Models\GalleryImage.cs" />

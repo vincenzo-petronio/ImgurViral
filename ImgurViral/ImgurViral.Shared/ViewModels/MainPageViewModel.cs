@@ -1,4 +1,5 @@
 ﻿using Caliburn.Micro;
+using ImgurViral.Exceptions;
 using ImgurViral.Models;
 using ImgurViral.Utils;
 using System;
@@ -39,6 +40,10 @@ namespace ImgurViral.ViewModels
                 }
                 else
                 {
+                    if(err.GetType() == typeof(ApiException)) 
+                    {
+                        Debug.WriteLine("ApiException");
+                    }
                     var dialog = new MessageDialog(resourceLoader.GetString("msg_connection_error"));
                     dialog.Commands.Add(new UICommand("OK", 
                         new UICommandInvokedHandler((s) => { CaliburnApplication.Current.Exit(); })));
@@ -47,6 +52,9 @@ namespace ImgurViral.ViewModels
             });
         }
 
+        /// <summary>
+        /// In binding con la proprietà Visible della Progress.
+        /// </summary>
         public Boolean ProgressRingIsActive
         {
             get
@@ -64,6 +72,9 @@ namespace ImgurViral.ViewModels
             }
         }
 
+        /// <summary>
+        /// In binding con la proprietà Visible del Button Logout.
+        /// </summary>
         public Boolean IsLogoutVisible
         {
             get
