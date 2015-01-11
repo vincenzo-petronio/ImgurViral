@@ -55,8 +55,6 @@ namespace ImgurViral.Utils
             }
             catch (ApiException ae)
             {
-                response = ae.Msg;
-                ApiError error = JsonConvert.DeserializeObject<ApiError>(response);
                 exception = ae;
             }
 
@@ -253,6 +251,7 @@ namespace ImgurViral.Utils
             else
             {
                 Debug.WriteLine("[DataService.RefreshAccessToken]\t" + httpResponseMessage.StatusCode + " Error New Access Token: " + response);
+                throw new ApiException(response);
             }
 
             return false;

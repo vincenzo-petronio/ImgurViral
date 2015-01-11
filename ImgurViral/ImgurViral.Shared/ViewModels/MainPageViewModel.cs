@@ -2,6 +2,7 @@
 using ImgurViral.Exceptions;
 using ImgurViral.Models;
 using ImgurViral.Utils;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -43,11 +44,24 @@ namespace ImgurViral.ViewModels
                     if(err.GetType() == typeof(ApiException)) 
                     {
                         Debug.WriteLine("ApiException");
+                        ApiError apiError = JsonConvert.DeserializeObject<ApiError>(err.Message);
+                        var dialog = new MessageDialog(apiError.Status + " - " + apiError.Data.Error);
+                        dialog.Commands.Add(new UICommand("OK",
+                            new UICommandInvokedHandler((s) => { /*CaliburnApplication.Current.Exit();*/ })));
+                        await dialog.ShowAsync();
                     }
-                    var dialog = new MessageDialog(resourceLoader.GetString("msg_connection_error"));
-                    dialog.Commands.Add(new UICommand("OK", 
-                        new UICommandInvokedHandler((s) => { CaliburnApplication.Current.Exit(); })));
-                    await dialog.ShowAsync();
+                    else if (err.GetType() == typeof(NetworkException))
+                    {
+                        Debug.WriteLine("NetworkException");
+                        var dialog = new MessageDialog(resourceLoader.GetString("msg_connection_error"));
+                        dialog.Commands.Add(new UICommand("OK",
+                            new UICommandInvokedHandler((s) => { CaliburnApplication.Current.Exit(); })));
+                        await dialog.ShowAsync();
+                    }
+                    else if (err.GetType() == typeof(ArgumentNullException))
+                    {
+                        Debug.WriteLine("ArgumentNullException");
+                    }
                 }
             });
         }

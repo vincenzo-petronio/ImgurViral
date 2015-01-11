@@ -9,9 +9,7 @@ namespace ImgurViral.Models
     /// </summary>
     class ApiError
     {
-        public String Error { get; set; }
-        public String Request { get; set; }
-        public String Method { get; set; }
+        public ApiErrorData Data { get; set; }
         public Boolean Success { get; set; }
         public Int32 Status { get; set; }
     }
