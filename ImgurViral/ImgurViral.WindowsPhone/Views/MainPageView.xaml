@@ -5,25 +5,48 @@
     xmlns:local="using:ImgurViral.Views"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    mc:Ignorable="d"
-    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+    mc:Ignorable="d">
 
     <Page.Resources>
         <DataTemplate x:Name="FlipViewTemplate">
-            <TextBlock Text="{Binding Title}" />
+            <TextBlock Text="{Binding Link}" />
         </DataTemplate>
     </Page.Resources>
-    
-    <Grid>
+
+    <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
         <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="100"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
         <Grid Grid.Row="0" Background="#FF89C624">
-            <TextBlock x:Uid="AppTitle" Text="" FontSize="{StaticResource FlyoutThemeMinHeight}" />
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="100" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+            <Image Grid.Column="0" Source="ms-appx:///Assets/imgur_logo_dot.png" Stretch="Uniform" Margin="10"/>
+            <ProgressRing Grid.Column="0" IsActive="{Binding ProgressRingIsActive}" Height="40" Width="40" HorizontalAlignment="Center" />
+            <Grid Grid.Column="1" Margin="10">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="*" />
+                </Grid.RowDefinitions>
+                <TextBlock Grid.Row="0" x:Uid="AppTitle" Text="" VerticalAlignment="Top" FontFamily="Segoe UI Light" FontSize="24" />
+                <TextBlock Grid.Row="1" Text="{Binding ElementName=Items, Path=SelectedItem.Title}" VerticalAlignment="Bottom" FontFamily="Segoe UI Light" FontSize="14" TextWrapping="Wrap" TextTrimming="WordEllipsis" />
+            </Grid>
         </Grid>
 
-        <FlipView x:Name="Items" Grid.Row="1" VerticalAlignment="Stretch" ItemTemplate="{StaticResource FlipViewTemplate}"/>
+        <!--<FlipView x:Name="Items" Grid.Row="1" VerticalAlignment="Stretch" ItemTemplate="{StaticResource FlipViewTemplate}"/>-->
+        <Grid Grid.Row="1">
+            <FlipView x:Name="Items" SelectedItem="SelectedItem" IsTabStop="True">
+                <FlipView.ItemTemplate>
+                    <DataTemplate>
+                        <ScrollViewer ZoomMode="Enabled" VerticalScrollBarVisibility="Hidden" MinZoomFactor="0.5" MaxZoomFactor="1.0" VerticalScrollMode="Auto" HorizontalScrollMode="Disabled" >
+                            <Image Source="{Binding Link}" Stretch="Uniform" VerticalAlignment="Center" HorizontalAlignment="Center" />
+                        </ScrollViewer>
+                    </DataTemplate>
+                </FlipView.ItemTemplate>
+            </FlipView>
+        </Grid>
     </Grid>
 </Page>
