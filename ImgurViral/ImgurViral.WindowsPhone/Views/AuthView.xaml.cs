@@ -35,5 +35,15 @@ namespace ImgurViral.Views
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
         }
+
+        private void WebView_Loaded(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void webView_NavigationStarting(WebView sender, WebViewNavigationStartingEventArgs args)
+        {
+
+        }
     }
 }

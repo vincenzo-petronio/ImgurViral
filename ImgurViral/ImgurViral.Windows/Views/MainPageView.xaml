@@ -5,7 +5,9 @@
     xmlns:local="using:ImgurViral.Views"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    mc:Ignorable="d">
+    mc:Ignorable="d"
+    xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
+    xmlns:cm="using:Caliburn.Micro">
     
     <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
         <Grid.RowDefinitions>
@@ -16,8 +18,8 @@
         <Grid Grid.Row="0" Background="#FF89C624">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="120" />
-                <ColumnDefinition Width="70*" />
-                <ColumnDefinition Width="30*" />
+                <ColumnDefinition Width="65*" />
+                <ColumnDefinition Width="35*" />
             </Grid.ColumnDefinitions>
 
             <Image Source="ms-appx:///Assets/imgur_logo_dot.png" Stretch="Uniform" Margin="20"/>
@@ -33,6 +35,7 @@
             <Grid Grid.Column="2" Margin="20">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
                     <ColumnDefinition Width="Auto" />
                 </Grid.ColumnDefinitions>
                 <StackPanel Orientation="Vertical" Grid.Column="0">
@@ -50,7 +53,21 @@
                             <Run Text="{Binding ElementName=Items, Path=SelectedItem.Views}" />
                     </TextBlock>
                 </StackPanel>
-                <AppBarButton Label="Logout" Icon="Remove" Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center"  Visibility="{Binding IsLogoutVisible, Converter={StaticResource BoolToVisConv}}" >
+                <AppBarButton Label="Share" Name="Share" Icon="ReShare" Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center">
+                    <!--<AppBarButton.Flyout>
+                        <Flyout>
+                            <StackPanel>
+                                <Image Source="ms-appx:///Assets/appbar.social.facebook.png" cm:Message.Attach="[Event Tapped] = [Action Share(1)]" />
+                                <Image Source="ms-appx:///Assets/appbar.social.twitter.png" cm:Message.Attach="[Event Tapped] = [Action Share(2)]"/>
+                                <Image Source="ms-appx:///Assets/appbar.social.googleplus.png" cm:Message.Attach="[Event Tapped] = [Action Share(3)]"/>
+                                <Image Source="ms-appx:///Assets/appbar.social.pinterest.png" cm:Message.Attach="[Event Tapped] = [Action Share(4)]"/>
+                                <Image Source="ms-appx:///Assets/appbar.social.tumblr.png" cm:Message.Attach="[Event Tapped] = [Action Share(5)]"/>
+                                <Image Source="ms-appx:///Assets/appbar.social.pocket.png" cm:Message.Attach="[Event Tapped] = [Action Share(6)]"/>
+                            </StackPanel>
+                        </Flyout>
+                    </AppBarButton.Flyout>-->
+                </AppBarButton>
+                <AppBarButton Label="Logout" Icon="Remove" Grid.Column="2" HorizontalAlignment="Center" VerticalAlignment="Center"  Visibility="{Binding IsLogoutVisible, Converter={StaticResource BoolToVisConv}}" >
                     <AppBarButton.Flyout>
                         <Flyout>
                             <StackPanel>

@@ -119,6 +119,12 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Assets\appbar.social.facebook.png" />
+    <Content Include="Assets\appbar.social.googleplus.png" />
+    <Content Include="Assets\appbar.social.pinterest.png" />
+    <Content Include="Assets\appbar.social.pocket.png" />
+    <Content Include="Assets\appbar.social.tumblr.png" />
+    <Content Include="Assets\appbar.social.twitter.png" />
     <Content Include="Assets\imgur_logo_dot.png" />
     <Content Include="Assets\Logo.scale-100.png" />
     <Content Include="Assets\SmallLogo.scale-100.png" />

@@ -6,6 +6,7 @@ using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using Windows.ApplicationModel.DataTransfer;
 using Windows.ApplicationModel.Resources;
 using Windows.UI.Popups;
 
@@ -21,6 +22,7 @@ namespace ImgurViral.ViewModels
         private String itemsCounter;
         private ResourceLoader resourceLoader;
         private Boolean isLogoutVisible;
+        private DataTransferManager dtm;
 
         public MainPageViewModel(IDataService dataService, INavigationService navigationService)
         {
@@ -40,6 +42,8 @@ namespace ImgurViral.ViewModels
                 if (err == null)
                 {
                     this.Items = gallery;
+                    this.dtm = DataTransferManager.GetForCurrentView();
+                    this.dtm.DataRequested += ShareHandler;
                 }
                 else
                 {
@@ -71,6 +75,12 @@ namespace ImgurViral.ViewModels
                     }
                 }
             });
+        }
+
+        protected override void OnDeactivate(bool close)
+        {
+            base.OnDeactivate(close);
+            this.dtm.DataRequested -= ShareHandler;
         }
 
         /// <summary>
@@ -177,6 +187,30 @@ namespace ImgurViral.ViewModels
         {
             await AuthHelper.DeleteAuthData();
             CaliburnApplication.Current.Exit();
+        }
+
+        public void Share()
+        {
+            Debug.WriteLine("[MainPageViewModel.Share]\t");
+            Windows.ApplicationModel.DataTransfer.DataTransferManager.ShowShareUI();
+            //switch (i)
+            //{
+            //    case 1: { Windows.ApplicationModel.DataTransfer.DataTransferManager.ShowShareUI(); break; }; // FB
+            //    case 2: { break; }; // TW
+            //    case 3: { break; }; // G+
+            //    case 4: { break; }; // PINTEREST
+            //    case 5: { break; }; // TUMBLR
+            //    case 6: { break; }; // POCKET
+            //    default: break;
+            //}
+        }
+
+        private void ShareHandler(DataTransferManager sender, DataRequestedEventArgs e)
+        {
+            Debug.WriteLine("[MainPageViewModel.ShareHandler]\t");
+            e.Request.Data.Properties.Title = resourceLoader.GetString("AppTitle/Text");
+            e.Request.Data.SetText(SelectedItem.Title + "\n\n" + SelectedItem.Link);
+            
         }
     }
 }
