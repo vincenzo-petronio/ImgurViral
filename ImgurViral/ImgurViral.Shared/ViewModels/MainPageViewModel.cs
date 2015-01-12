@@ -14,16 +14,18 @@ namespace ImgurViral.ViewModels
     public class MainPageViewModel : Screen
     {
         private IDataService dataService;
+        private INavigationService navigationService;
         private Boolean progressRingIsActive;
         private List<GalleryImageData> items;
         private GalleryImageData selectedItem;
         private String itemsCounter;
         private ResourceLoader resourceLoader;
         private Boolean isLogoutVisible;
-        
-        public MainPageViewModel(IDataService dataService)
+
+        public MainPageViewModel(IDataService dataService, INavigationService navigationService)
         {
             this.dataService = dataService;
+            this.navigationService = navigationService;
             this.progressRingIsActive = true;
             this.items = new List<GalleryImageData>();
             this.resourceLoader = new ResourceLoader();
@@ -33,7 +35,7 @@ namespace ImgurViral.ViewModels
         protected override void OnActivate()
         {
             base.OnActivate();
-            this.dataService.getGalleryImage(async (gallery, err) => {
+            this.dataService.GetGalleryImage(async (gallery, err) => {
                 ProgressRingIsActive = false;
                 if (err == null)
                 {
@@ -41,18 +43,23 @@ namespace ImgurViral.ViewModels
                 }
                 else
                 {
-                    if(err.GetType() == typeof(ApiException)) 
+                    if (err.GetType() == typeof(ApiException))
                     {
-                        Debug.WriteLine("ApiException");
+                        Debug.WriteLine("[MainPageViewModel.OnActivate]\t" + "ApiException");
                         ApiError apiError = JsonConvert.DeserializeObject<ApiError>(err.Message);
-                        var dialog = new MessageDialog(apiError.Status + " - " + apiError.Data.Error);
+
+                        var dialog = new MessageDialog(apiError.Status + " - " + apiError.Data.Error + "\n" + resourceLoader.GetString("msg_login_again"));
                         dialog.Commands.Add(new UICommand("OK",
-                            new UICommandInvokedHandler((s) => { /*CaliburnApplication.Current.Exit();*/ })));
+                            new UICommandInvokedHandler(async (s) =>
+                            {
+                                await AuthHelper.DeleteAuthData();
+                                navigationService.GoBack();
+                            })));
                         await dialog.ShowAsync();
                     }
                     else if (err.GetType() == typeof(NetworkException))
                     {
-                        Debug.WriteLine("NetworkException");
+                        Debug.WriteLine("[MainPageViewModel.OnActivate]\t" + "NetworkException");
                         var dialog = new MessageDialog(resourceLoader.GetString("msg_connection_error"));
                         dialog.Commands.Add(new UICommand("OK",
                             new UICommandInvokedHandler((s) => { CaliburnApplication.Current.Exit(); })));
@@ -60,7 +67,7 @@ namespace ImgurViral.ViewModels
                     }
                     else if (err.GetType() == typeof(ArgumentNullException))
                     {
-                        Debug.WriteLine("ArgumentNullException");
+                        Debug.WriteLine("[MainPageViewModel.OnActivate]\t" + "ArgumentNullException");
                     }
                 }
             });

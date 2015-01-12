@@ -123,6 +123,9 @@
   <data name="msg_connection_error" xml:space="preserve">
     <value>oops... there is some problem. Try to check your connection!</value>
   </data>
+  <data name="msg_login_againt" xml:space="preserve">
+    <value>It seems that is not possible to contact Imgur, try to login again!</value>
+  </data>
   <data name="msg_logout.Text" xml:space="preserve">
     <value>Ehi, come back soon!</value>
   </data>

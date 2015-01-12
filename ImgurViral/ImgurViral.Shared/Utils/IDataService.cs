@@ -10,6 +10,6 @@ namespace ImgurViral.Utils
     /// </summary>
     public interface IDataService
     {
-        Task<List<GalleryImageData>> getGalleryImage(Action<List<GalleryImageData>, Exception> callback);
+        Task<List<GalleryImageData>> GetGalleryImage(Action<List<GalleryImageData>, Exception> callback);
     }
 }

@@ -23,7 +23,7 @@ namespace ImgurViral.Utils
         /// </summary>
         /// <param name="callback"></param>
         /// <returns></returns>
-        public async Task<List<GalleryImageData>> getGalleryImage(Action<List<GalleryImageData>, Exception> callback)
+        public async Task<List<GalleryImageData>> GetGalleryImage(Action<List<GalleryImageData>, Exception> callback)
         {
             Exception exception = null;
             List<GalleryImageData> results = new List<GalleryImageData>();
@@ -94,7 +94,7 @@ namespace ImgurViral.Utils
                 httpResponseMessage = await httpClient.GetAsync(new Uri(uri));
                 response = await httpResponseMessage.Content.ReadAsStringAsync();
             }
-            catch (ArgumentNullException ane)
+            catch (ArgumentNullException)
             {
                 throw new ArgumentNullException("BAD_GET_URI");
             }
@@ -124,19 +124,33 @@ namespace ImgurViral.Utils
                     // 403
                     Debug.WriteLine("[DataService.DownloadData]\t" + "HttpStatusCode 403 - Forbidden");
                     bool isNewToken = await RefreshAccessToken(authUser.RefreshToken);
-                    if (isNewToken)
+
+                    authUser = await AuthHelper.ReadAuthData();
+                    if (!isNewToken || null == authUser || String.IsNullOrEmpty(authUser.AccessToken) || String.IsNullOrEmpty(authUser.RefreshToken))
                     {
-                        authUser = await AuthHelper.ReadAuthData();
-                        if (null != authUser && !String.IsNullOrEmpty(authUser.AccessToken) && !String.IsNullOrEmpty(authUser.RefreshToken))
-                        {
-                            httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Authorization", "Bearer " + authUser.AccessToken);
-                            httpResponseMessage = await httpClient.GetAsync(new Uri(uri));
-                            if (httpResponseMessage.IsSuccessStatusCode)
-                            {
-                                response = await httpResponseMessage.Content.ReadAsStringAsync();
-                            }
-                        }
+                        throw new ArgumentNullException("NO_LOCAL_TOKEN");
                     }
+
+                    try
+                    {
+                        httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Authorization", "Bearer " + authUser.AccessToken);
+                        httpResponseMessage = await httpClient.GetAsync(new Uri(uri));
+                        response = await httpResponseMessage.Content.ReadAsStringAsync();
+                    }
+                    catch (ArgumentNullException)
+                    {
+                        throw new ArgumentNullException("BAD_GET_URI");
+                    }
+
+                    if (httpResponseMessage.IsSuccessStatusCode)
+                    {
+                        // OK
+                    }
+                    else
+                    {
+                        throw new ApiException(response);
+                    }
+
                     break;
                 }
                 case System.Net.HttpStatusCode.NotFound:
@@ -158,52 +172,6 @@ namespace ImgurViral.Utils
                     throw new ApiException(response);
                 }
             }
-
-            //try
-            //{
-            //    authUser = await AuthHelper.ReadAuthData();
-            //    if (null != authUser && !String.IsNullOrEmpty(authUser.AccessToken) && !String.IsNullOrEmpty(authUser.RefreshToken))
-            //    {
-            //        httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Authorization", "Bearer " + authUser.AccessToken);
-            //        httpResponseMessage = await httpClient.GetAsync(new Uri(uri));
-            //        if (httpResponseMessage.IsSuccessStatusCode)
-            //        {
-            //            response = await httpResponseMessage.Content.ReadAsStringAsync();
-            //        }
-            //        else if(httpResponseMessage.StatusCode == System.Net.HttpStatusCode.Forbidden)
-            //        {
-            //            Debug.WriteLine("[DataService.DownloadData]\t" + "HttpStatusCode 403");
-
-            //            bool isNewToken = await RefreshAccessToken(authUser.RefreshToken);
-            //            if (isNewToken)
-            //            {
-            //                authUser = await AuthHelper.ReadAuthData();
-            //                if (null != authUser && !String.IsNullOrEmpty(authUser.AccessToken) && !String.IsNullOrEmpty(authUser.RefreshToken))
-            //                {
-            //                    httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Authorization", "Bearer " + authUser.AccessToken);
-            //                    httpResponseMessage = await httpClient.GetAsync(new Uri(uri));
-            //                    if (httpResponseMessage.IsSuccessStatusCode)
-            //                    {
-            //                        response = await httpResponseMessage.Content.ReadAsStringAsync();
-            //                    }
-            //                }
-            //            }
-            //        }
-            //    }
-            //    else
-            //    {
-            //        Debug.WriteLine("[DataService.DownloadData]\t" + "NO ACCESS TOKEN FROM LOCAL!");
-            //        throw new ArgumentNullException();
-            //    }
-            //}
-            //catch (HttpRequestException hre)
-            //{
-            //    Debug.WriteLine("[DataService.DownloadData]\t" + "HttpRequestException\n" + hre.ToString());
-            //}
-            //catch (Exception ex)
-            //{
-            //    Debug.WriteLine("[DataService.DownloadData]\t" + "Exception\n" + ex.ToString());
-            //}
             
             return response;
         }
@@ -213,7 +181,7 @@ namespace ImgurViral.Utils
         /// </summary>
         /// <param name="refreshToken">String</param>
         /// <returns>bool</returns>
-        public async static Task<bool> RefreshAccessToken(String refreshToken)
+        private async static Task<bool> RefreshAccessToken(String refreshToken)
         {
             var response = String.Empty;
             HttpResponseMessage httpResponseMessage;
