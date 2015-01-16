@@ -62,8 +62,7 @@
                 <TextBlock Grid.Row="1" Grid.ColumnSpan="2" Text="{Binding ElementName=Items, Path=SelectedItem.Title}" VerticalAlignment="Bottom" FontFamily="Segoe UI Light" FontSize="14" TextWrapping="Wrap" TextTrimming="WordEllipsis" />
             </Grid>
         </Grid>
-
-        <!--<FlipView x:Name="Items" Grid.Row="1" VerticalAlignment="Stretch" ItemTemplate="{StaticResource FlipViewTemplate}"/>-->
+        
         <Grid Grid.Row="1">
             <FlipView x:Name="Items" SelectedItem="SelectedItem" IsTabStop="True">
                 <FlipView.ItemTemplate>
