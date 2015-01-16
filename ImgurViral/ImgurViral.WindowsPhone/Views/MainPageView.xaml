@@ -6,12 +6,15 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d">
-
-    <Page.Resources>
-        <DataTemplate x:Name="FlipViewTemplate">
-            <TextBlock Text="{Binding Link}" />
-        </DataTemplate>
-    </Page.Resources>
+    
+    <Page.BottomAppBar>
+        <CommandBar ClosedDisplayMode="Minimal">
+            <CommandBar.PrimaryCommands>
+                <AppBarButton Icon="ReShare" Label="Share" Name="Share" />
+                <AppBarButton Icon="Remove" Label="Logout" Name="Logout" />
+            </CommandBar.PrimaryCommands>
+        </CommandBar>    
+    </Page.BottomAppBar>
 
     <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
         <Grid.RowDefinitions>
@@ -24,15 +27,29 @@
                 <ColumnDefinition Width="100" />
                 <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
-            <Image Grid.Column="0" Source="ms-appx:///Assets/imgur_logo_dot.png" Stretch="Uniform" Margin="10"/>
-            <ProgressRing Grid.Column="0" IsActive="{Binding ProgressRingIsActive}" Height="40" Width="40" HorizontalAlignment="Center" />
-            <Grid Grid.Column="1" Margin="10">
+            <Image Grid.Column="0" Source="ms-appx:///Assets/imgur_logo_dot.png" Stretch="Uniform" Margin="5"/>
+            <ProgressRing Grid.Column="0" IsActive="{Binding ProgressRingIsActive}" Height="60" Width="60" HorizontalAlignment="Center" />
+            <Grid Grid.Column="1" Margin="5">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto" />
                     <RowDefinition Height="*" />
                 </Grid.RowDefinitions>
-                <TextBlock Grid.Row="0" x:Uid="AppTitle" Text="" VerticalAlignment="Top" FontFamily="Segoe UI Light" FontSize="24" />
-                <TextBlock Grid.Row="1" Text="{Binding ElementName=Items, Path=SelectedItem.Title}" VerticalAlignment="Bottom" FontFamily="Segoe UI Light" FontSize="14" TextWrapping="Wrap" TextTrimming="WordEllipsis" />
+                <TextBlock Grid.Row="0" Grid.Column="0" x:Uid="AppTitle" Text="" VerticalAlignment="Top" FontFamily="Segoe UI Light" FontSize="24" />
+                <StackPanel Grid.Row="0" Grid.Column="1" Orientation="Vertical" HorizontalAlignment="Right">
+                    <TextBlock FontFamily="Segoe UI Semibold" FontSize="14" >
+                            <Run Text="Score: " />
+                            <Run Text="{Binding ElementName=Items, Path=SelectedItem.Score}" />
+                    </TextBlock>
+                    <TextBlock FontFamily="Segoe UI Semibold" FontSize="14" >
+                            <Run Text="Views: " />
+                            <Run Text="{Binding ElementName=Items, Path=SelectedItem.Views}" />
+                    </TextBlock>
+                </StackPanel>
+                <TextBlock Grid.Row="1" Grid.ColumnSpan="2" Text="{Binding ElementName=Items, Path=SelectedItem.Title}" VerticalAlignment="Bottom" FontFamily="Segoe UI Light" FontSize="14" TextWrapping="Wrap" TextTrimming="WordEllipsis" />
             </Grid>
         </Grid>
 

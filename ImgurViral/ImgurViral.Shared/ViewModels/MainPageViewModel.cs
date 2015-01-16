@@ -80,7 +80,10 @@ namespace ImgurViral.ViewModels
         protected override void OnDeactivate(bool close)
         {
             base.OnDeactivate(close);
-            this.dtm.DataRequested -= ShareHandler;
+            if (this.dtm != null)
+            {
+                this.dtm.DataRequested -= ShareHandler;
+            }
         }
 
         /// <summary>
@@ -193,16 +196,6 @@ namespace ImgurViral.ViewModels
         {
             Debug.WriteLine("[MainPageViewModel.Share]\t");
             Windows.ApplicationModel.DataTransfer.DataTransferManager.ShowShareUI();
-            //switch (i)
-            //{
-            //    case 1: { Windows.ApplicationModel.DataTransfer.DataTransferManager.ShowShareUI(); break; }; // FB
-            //    case 2: { break; }; // TW
-            //    case 3: { break; }; // G+
-            //    case 4: { break; }; // PINTEREST
-            //    case 5: { break; }; // TUMBLR
-            //    case 6: { break; }; // POCKET
-            //    default: break;
-            //}
         }
 
         private void ShareHandler(DataTransferManager sender, DataRequestedEventArgs e)
@@ -210,7 +203,6 @@ namespace ImgurViral.ViewModels
             Debug.WriteLine("[MainPageViewModel.ShareHandler]\t");
             e.Request.Data.Properties.Title = resourceLoader.GetString("AppTitle/Text");
             e.Request.Data.SetText(SelectedItem.Title + "\n\n" + SelectedItem.Link);
-            
         }
     }
 }
