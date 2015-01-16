@@ -11,7 +11,17 @@
         <CommandBar ClosedDisplayMode="Minimal">
             <CommandBar.PrimaryCommands>
                 <AppBarButton Icon="ReShare" Label="Share" Name="Share" />
-                <AppBarButton Icon="Remove" Label="Logout" Name="Logout" />
+                <AppBarButton Icon="Remove" Label="Logout">
+                    <AppBarButton.Flyout>
+                        <Flyout>
+                            <StackPanel>
+                                <TextBlock Text="" x:Uid="msg_logout" FontFamily="Segoe UI Semibold" FontSize="16" />
+                                <Button Content="OK" Name="Logout" Background="#FF89C624" Margin="8" HorizontalAlignment="Right" />
+                            </StackPanel>
+                        </Flyout>
+                    </AppBarButton.Flyout>
+                </AppBarButton>
+                
             </CommandBar.PrimaryCommands>
         </CommandBar>    
     </Page.BottomAppBar>
