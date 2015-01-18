@@ -5,8 +5,9 @@
     xmlns:local="using:ImgurViral.Views"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    mc:Ignorable="d">
-    
+    mc:Ignorable="d"
+    xmlns:cal="using:Caliburn.Micro">
+
     <Page.BottomAppBar>
         <CommandBar ClosedDisplayMode="Minimal">
             <CommandBar.PrimaryCommands>
@@ -21,9 +22,8 @@
                         </Flyout>
                     </AppBarButton.Flyout>
                 </AppBarButton>
-                
             </CommandBar.PrimaryCommands>
-        </CommandBar>    
+        </CommandBar>
     </Page.BottomAppBar>
 
     <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
@@ -62,17 +62,28 @@
                 <TextBlock Grid.Row="1" Grid.ColumnSpan="2" Text="{Binding ElementName=Items, Path=SelectedItem.Title}" VerticalAlignment="Bottom" FontFamily="Segoe UI Light" FontSize="14" TextWrapping="Wrap" TextTrimming="WordEllipsis" />
             </Grid>
         </Grid>
-        
+
         <Grid Grid.Row="1">
-            <FlipView x:Name="Items" SelectedItem="SelectedItem" IsTabStop="True">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+            <FlipView Grid.Row="0"  Grid.RowSpan="2" x:Name="Items" SelectedItem="SelectedItem" IsTabStop="True">
                 <FlipView.ItemTemplate>
                     <DataTemplate>
                         <ScrollViewer ZoomMode="Enabled" VerticalScrollBarVisibility="Hidden" MinZoomFactor="0.5" MaxZoomFactor="1.0" VerticalScrollMode="Auto" HorizontalScrollMode="Disabled" >
-                            <Image Source="{Binding Link}" Stretch="Uniform" VerticalAlignment="Center" HorizontalAlignment="Center" />
+                            <Image Source="{Binding Link}" Stretch="Uniform" VerticalAlignment="Center" HorizontalAlignment="Center" cal:Message.Attach="[Event ImageOpened] = [Action ImageIsOpened()]; [Event ImageFailed] = [Action ImageIsFailed()]"/>
                         </ScrollViewer>
                     </DataTemplate>
                 </FlipView.ItemTemplate>
             </FlipView>
+            <Border Grid.Row="0" Background="#7F89C624" Width="Auto" HorizontalAlignment="Right" Margin="4">
+                <TextBlock FontFamily="Segoe UI Semibold" FontSize="14" HorizontalAlignment="Right" Margin="4">
+                    <Run Text="{Binding ElementName=Items, Path=SelectedIndex, Converter={StaticResource IndexConv}}"/>
+                    <Run Text="/" />
+                    <Run Text="{Binding Items.Count}" />
+                </TextBlock>
+            </Border>
         </Grid>
     </Grid>
 </Page>

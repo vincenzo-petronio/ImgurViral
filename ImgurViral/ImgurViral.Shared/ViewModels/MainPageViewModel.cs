@@ -106,6 +106,17 @@ namespace ImgurViral.ViewModels
             }
         }
 
+        public void ImageIsOpened()
+        {
+            Debug.WriteLine("IS_IMAGE_OPENED");
+            // ProgressRingIsActive = false;
+        }
+
+        public void ImageIsFailed()
+        {
+            Debug.WriteLine("IS_IMAGE_FAILED");
+        }
+
         /// <summary>
         /// In binding con la proprietà Visible del Button Logout.
         /// </summary>
@@ -158,7 +169,7 @@ namespace ImgurViral.ViewModels
 
             set
             {
-                if (selectedItem != value)
+                if (selectedItem != value && value != null)
                 {
                     selectedItem = value;
                     NotifyOfPropertyChange(() => SelectedItem);
@@ -194,13 +205,11 @@ namespace ImgurViral.ViewModels
 
         public void Share()
         {
-            Debug.WriteLine("[MainPageViewModel.Share]\t");
             Windows.ApplicationModel.DataTransfer.DataTransferManager.ShowShareUI();
         }
 
         private void ShareHandler(DataTransferManager sender, DataRequestedEventArgs e)
         {
-            Debug.WriteLine("[MainPageViewModel.ShareHandler]\t");
             e.Request.Data.Properties.Title = resourceLoader.GetString("AppTitle/Text");
             e.Request.Data.SetText(SelectedItem.Title + "\n\n" + SelectedItem.Link);
         }
