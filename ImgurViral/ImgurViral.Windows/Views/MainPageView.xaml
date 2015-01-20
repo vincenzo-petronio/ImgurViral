@@ -71,7 +71,7 @@
                 <ColumnDefinition Width="30*" />
             </Grid.ColumnDefinitions>
             
-            <FlipView Grid.Column="0" x:Name="Items" SelectedItem="SelectedItem" IsTabStop="True">
+            <FlipView Grid.Column="0" Grid.ColumnSpan="2" x:Name="Items" SelectedItem="SelectedItem" IsTabStop="True">
                 <FlipView.ItemTemplate>
                     <DataTemplate>
                         <ScrollViewer ZoomMode="Enabled" VerticalScrollBarVisibility="Hidden" MinZoomFactor="0.5" MaxZoomFactor="1.0" VerticalScrollMode="Auto" HorizontalScrollMode="Disabled" >
