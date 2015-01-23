@@ -1,10 +1,10 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Package xmlns="http://schemas.microsoft.com/appx/2010/manifest" xmlns:m2="http://schemas.microsoft.com/appx/2013/manifest" xmlns:m3="http://schemas.microsoft.com/appx/2014/manifest" xmlns:mp="http://schemas.microsoft.com/appx/2014/phone/manifest">
-  <Identity Name="51b7cd29-5937-406a-a576-0c1688cbc7f9" Publisher="CN=Utente" Version="0.1.0.0" />
-  <mp:PhoneIdentity PhoneProductId="51b7cd29-5937-406a-a576-0c1688cbc7f9" PhonePublisherId="00000000-0000-0000-0000-000000000000" />
+  <Identity Name="41038vincenzo.petronio.ImgurViralbeta" Publisher="CN=ACFBCF7C-15E3-437C-8F22-BE694B4B2AA2" Version="0.1.0.0" />
+  <mp:PhoneIdentity PhoneProductId="3fec46d5-a133-4ece-ac3d-c478dc545a73" PhonePublisherId="00000000-0000-0000-0000-000000000000" />
   <Properties>
-    <DisplayName>ImgurViral.WindowsPhone</DisplayName>
-    <PublisherDisplayName>Vincenzo Petronio</PublisherDisplayName>
+    <DisplayName>Imgur Viral beta</DisplayName>
+    <PublisherDisplayName>vincenzo.petronio</PublisherDisplayName>
     <Logo>Assets\StoreLogo.png</Logo>
   </Properties>
   <Prerequisites>
@@ -16,7 +16,7 @@
   </Resources>
   <Applications>
     <Application Id="App" Executable="$targetnametoken$.exe" EntryPoint="ImgurViral.WindowsPhone.App">
-      <m3:VisualElements DisplayName="Imgur Viral" Square150x150Logo="Assets\Logo.png" Square44x44Logo="Assets\SmallLogo.png" Description="View, comment and share some of the most viral images thanks to Imgur." ForegroundText="light" BackgroundColor="transparent" ToastCapable="false">
+      <m3:VisualElements DisplayName="Imgur Viral beta" Square150x150Logo="Assets\Logo.png" Square44x44Logo="Assets\SmallLogo.png" Description="View, comment and share some of the most viral images thanks to Imgur." ForegroundText="light" BackgroundColor="transparent" ToastCapable="false">
         <m3:DefaultTile Wide310x150Logo="Assets\WideLogo.png" Square71x71Logo="Assets\Square71x71Logo.png">
           <m3:ShowNameOnTiles>
             <m3:ShowOn Tile="square150x150Logo" />

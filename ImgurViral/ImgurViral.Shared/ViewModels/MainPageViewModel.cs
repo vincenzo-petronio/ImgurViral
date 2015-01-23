@@ -32,6 +32,11 @@ namespace ImgurViral.ViewModels
             this.items = new List<GalleryImageData>();
             this.resourceLoader = new ResourceLoader();
             this.isLogoutVisible = true;
+
+#if WINDOWS_PHONE_APP
+            Windows.Phone.UI.Input.HardwareButtons.BackPressed += HardwareButtons_BackPressed;
+#endif
+
         }
 
         protected override void OnActivate()
@@ -85,6 +90,13 @@ namespace ImgurViral.ViewModels
                 this.dtm.DataRequested -= ShareHandler;
             }
         }
+
+#if WINDOWS_PHONE_APP
+        private void HardwareButtons_BackPressed(object sender, Windows.Phone.UI.Input.BackPressedEventArgs e)
+        {
+            CaliburnApplication.Current.Exit();
+        }
+#endif
 
         /// <summary>
         /// In binding con la proprietà Visible della Progress.
@@ -200,7 +212,7 @@ namespace ImgurViral.ViewModels
         public async void Logout()
         {
             await AuthHelper.DeleteAuthData();
-            CaliburnApplication.Current.Exit();
+            this.navigationService.GoBack();
         }
 
         public void Share()

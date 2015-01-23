@@ -6,6 +6,8 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Windows.Storage;
+using Windows.Web.Http;
+using Windows.Web.Http.Filters;
 
 namespace ImgurViral.Utils
 {
@@ -156,6 +158,22 @@ namespace ImgurViral.Utils
             StorageFolder sFolder = Windows.Storage.ApplicationData.Current.LocalFolder;
             StorageFile sFile = await sFolder.GetFileAsync(Constants.AUTH_LOCALSETTINGS_FILENAME);
             await sFile.DeleteAsync();
+            await Windows.Storage.ApplicationData.Current.ClearAsync(ApplicationDataLocality.Temporary);
+            await Windows.Storage.ApplicationData.Current.ClearAsync(ApplicationDataLocality.Local);
+            await Windows.Storage.ApplicationData.Current.ClearAsync(ApplicationDataLocality.LocalCache);
+            HttpBaseProtocolFilter httpBaseProtoFilter = new HttpBaseProtocolFilter();
+            try
+            {
+                foreach (HttpCookie cookie in httpBaseProtoFilter.CookieManager.GetCookies(new Uri(Constants.ENDPOINT_IMGUR_BASE)))
+                {
+                    Debug.WriteLine("[AuthHelper.DeleteAuthData]\t" + "Cookie=[" + cookie.Domain.ToString() + ", " + cookie.Name + "]");
+                    httpBaseProtoFilter.CookieManager.DeleteCookie(cookie);
+                }
+            }
+            catch (Exception)
+            {
+                Debug.WriteLine("[AuthHelper.DeleteAuthData]\t" + "Exception!");
+            }
             Debug.WriteLine("[AuthHelper.DeleteAuthData]\t" + "Deleted!");
         }
     }
