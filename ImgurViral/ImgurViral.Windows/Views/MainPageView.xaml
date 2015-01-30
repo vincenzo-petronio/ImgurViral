@@ -9,55 +9,58 @@
     
     <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
         <Grid.RowDefinitions>
-            <RowDefinition Height="160"/>
+            <RowDefinition Height="160" x:Name="AppBarUp"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
         <Grid Grid.Row="0" Background="#FF89C624">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="120" />
-                <ColumnDefinition Width="65*" />
-                <ColumnDefinition Width="35*" />
+                <ColumnDefinition Width="120" x:Name="ColumnLogo" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
             </Grid.ColumnDefinitions>
 
             <Image Source="ms-appx:///Assets/imgur_logo_dot.png" Stretch="Uniform" Margin="20"/>
             <ProgressRing Grid.Column="0" IsActive="{Binding ProgressRingIsActive}" Height="40" Width="40" HorizontalAlignment="Center" />
-            <Grid Grid.Column="1" Margin="20">
+            <Grid Grid.Column="1" Margin="10">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto" />
                     <RowDefinition Height="*" />
                 </Grid.RowDefinitions>
                 <TextBlock Grid.Row="0" x:Uid="AppTitle" Text="" VerticalAlignment="Top" FontFamily="Segoe UI Light" FontSize="42" />
-                <TextBlock Grid.Row="1" Text="{Binding ElementName=Items, Path=SelectedItem.Title}" VerticalAlignment="Bottom" FontFamily="Segoe UI Light" FontSize="20" TextWrapping="Wrap" TextTrimming="WordEllipsis" />
+                <TextBlock Grid.Row="1" Text="{Binding SelectedItem.Title, ElementName=Items}" VerticalAlignment="Bottom" FontFamily="Segoe UI Light" FontSize="20" TextWrapping="Wrap" TextTrimming="WordEllipsis" />
             </Grid>
-            <Grid Grid.Column="2" Margin="20">
+            <Grid Grid.Column="2" Margin="10">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="*" />
+                </Grid.RowDefinitions>
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*" />
                     <ColumnDefinition Width="Auto" />
                     <ColumnDefinition Width="Auto" />
                 </Grid.ColumnDefinitions>
-                <StackPanel Orientation="Vertical" Grid.Column="0">
-                    <TextBlock FontFamily="Segoe UI Semibold" FontSize="16" >
-                            <Run Text="{Binding ElementName=Items, Path=SelectedIndex, Converter={StaticResource IndexConv}}"/>
+                <StackPanel Orientation="Vertical" Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="1" Margin="30,0,0,0" HorizontalAlignment="Left" VerticalAlignment="Bottom">
+                    <TextBlock FontFamily="Segoe UI Semibold" FontSize="14" >
+                            <Run Text="{Binding SelectedIndex, Converter={StaticResource IndexConv}, ElementName=Items}"/>
                             <Run Text="/" />
                             <Run Text="{Binding Items.Count}" />
                     </TextBlock>
                     <TextBlock FontFamily="Segoe UI Semibold" FontSize="14" >
                             <Run Text="Score: " />
-                            <Run Text="{Binding ElementName=Items, Path=SelectedItem.Score}" />
+                            <Run Text="{Binding SelectedItem.Score, ElementName=Items}" />
                     </TextBlock>
                     <TextBlock FontFamily="Segoe UI Semibold" FontSize="14" >
                             <Run Text="Views: " />
-                            <Run Text="{Binding ElementName=Items, Path=SelectedItem.Views}" />
+                            <Run Text="{Binding SelectedItem.Views, ElementName=Items}" />
                     </TextBlock>
                 </StackPanel>
-                <AppBarButton Label="Share" Name="Share" Icon="ReShare" Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center" />
-                <AppBarButton Label="Logout" Icon="Remove" Grid.Column="2" HorizontalAlignment="Center" VerticalAlignment="Center"  Visibility="{Binding IsLogoutVisible, Converter={StaticResource BoolToVisConv}}" >
+                <AppBarButton Label="Share" x:Name="Share" Icon="ReShare" Grid.Column="0" />
+                <AppBarButton Label="Logout" Icon="Remove" Grid.Column="1" Visibility="{Binding IsLogoutVisible, Converter={StaticResource BoolToVisConv}}" >
                     <AppBarButton.Flyout>
                         <Flyout>
                             <StackPanel>
                                 <TextBlock Text="" x:Uid="msg_logout" FontFamily="Segoe UI Semibold" FontSize="16" />
-                                <Button Content="OK" Name="Logout" Background="#FF89C624" Margin="8" HorizontalAlignment="Right" />
+                                <Button Content="OK" x:Name="Logout" Background="#FF89C624" Margin="8" HorizontalAlignment="Right" />
                             </StackPanel>
                         </Flyout>
                     </AppBarButton.Flyout>
@@ -82,5 +85,30 @@
             </FlipView>
         </Grid>
 
+        <VisualStateManager.VisualStateGroups>
+            <VisualStateGroup>
+                <VisualState x:Name="DefaultLayout">
+                    <Storyboard>
+                    </Storyboard>
+                </VisualState>
+
+                <VisualState x:Name="MinimalLayout">
+                    <Storyboard>
+                        <ObjectAnimationUsingKeyFrames 
+                            Storyboard.TargetProperty="Height" 
+                            Storyboard.TargetName="AppBarUp">
+                            <DiscreteObjectKeyFrame KeyTime="0" Value="200" />
+                        </ObjectAnimationUsingKeyFrames>
+                        <ObjectAnimationUsingKeyFrames 
+                            Storyboard.TargetProperty="Width" 
+                            Storyboard.TargetName="ColumnLogo">
+                            <DiscreteObjectKeyFrame KeyTime="0" Value="0" />
+                        </ObjectAnimationUsingKeyFrames>
+                    </Storyboard>
+                </VisualState>
+            </VisualStateGroup>
+        </VisualStateManager.VisualStateGroups>
+        
     </Grid>
+
 </Page>

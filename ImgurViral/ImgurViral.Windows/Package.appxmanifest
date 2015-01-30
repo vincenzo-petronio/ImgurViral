@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Package xmlns="http://schemas.microsoft.com/appx/2010/manifest" xmlns:m2="http://schemas.microsoft.com/appx/2013/manifest">
-  <Identity Name="41038vincenzo.petronio.ImgurViral" Publisher="CN=ACFBCF7C-15E3-437C-8F22-BE694B4B2AA2" Version="0.1.0.0" />
+  <Identity Name="41038vincenzo.petronio.ImgurViral" Publisher="CN=ACFBCF7C-15E3-437C-8F22-BE694B4B2AA2" Version="0.1.2.0" />
   <Properties>
     <DisplayName>Imgur Viral</DisplayName>
     <PublisherDisplayName>vincenzo.petronio</PublisherDisplayName>
