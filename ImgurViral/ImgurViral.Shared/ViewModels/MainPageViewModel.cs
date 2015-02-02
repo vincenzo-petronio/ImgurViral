@@ -18,6 +18,7 @@ namespace ImgurViral.ViewModels
         private INavigationService navigationService;
         private Boolean progressRingIsActive;
         private List<GalleryImageData> items;
+        private List<AlbumImageCommentsData> imageComments;
         private GalleryImageData selectedItem;
         private String itemsCounter;
         private ResourceLoader resourceLoader;
@@ -30,6 +31,7 @@ namespace ImgurViral.ViewModels
             this.navigationService = navigationService;
             this.progressRingIsActive = true;
             this.items = new List<GalleryImageData>();
+            this.imageComments = new List<AlbumImageCommentsData>();
             this.resourceLoader = new ResourceLoader();
             this.isLogoutVisible = true;
 
@@ -37,6 +39,41 @@ namespace ImgurViral.ViewModels
             Windows.Phone.UI.Input.HardwareButtons.BackPressed += HardwareButtons_BackPressed;
 #endif
 
+        }
+
+        public MainPageViewModel()
+        {
+            if (Execute.InDesignMode)
+            {
+                this.ImageComments = new List<AlbumImageCommentsData>
+                {
+                    new AlbumImageCommentsData 
+                    {
+                        Author = "Blake",
+                        Comment = "Lorem ipsum dolor sit amet, consectetur adipiscing elit",
+                    },
+                    new AlbumImageCommentsData 
+                    {
+                        Author = "Colin1985imgurOfficial",
+                        Comment = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
+                    },
+                    new AlbumImageCommentsData 
+                    {
+                        Author = "Christopher",
+                        Comment = "Lorem ipsum dolor sit amet",
+                    },
+                    new AlbumImageCommentsData 
+                    {
+                        Author = "Justin",
+                        Comment = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor",
+                    },
+                    new AlbumImageCommentsData 
+                    {
+                        Author = "Justin & Christopher",
+                        Comment = "Lorem ipsum",
+                    }
+                };
+            }
         }
 
         protected override void OnActivate()
@@ -169,6 +206,23 @@ namespace ImgurViral.ViewModels
             }
         }
 
+        public List<AlbumImageCommentsData> ImageComments
+        {
+            get
+            {
+                return imageComments;
+            }
+
+            set
+            {
+                if (value != null && imageComments != value)
+                {
+                    imageComments = value;
+                    NotifyOfPropertyChange(() => ImageComments);
+                }
+            }
+        }
+
         /// <summary>
         /// Selected item from FlipView
         /// </summary>
@@ -185,6 +239,18 @@ namespace ImgurViral.ViewModels
                 {
                     selectedItem = value;
                     NotifyOfPropertyChange(() => SelectedItem);
+
+                    this.dataService.GetAlbumImageComments(async (comments, err) =>
+                    {
+                        if (err == null)
+                        {
+                            this.ImageComments = comments;
+                        }
+                        else
+                        {
+                            // TODO
+                        }
+                    }, SelectedItem.Id);
                 }
             }
         }

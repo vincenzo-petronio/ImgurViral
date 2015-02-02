@@ -20,6 +20,8 @@
     <Compile Include="$(MSBuildThisFileDirectory)Converters\Index0To1BasedConverter.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Exceptions\ApiException.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Exceptions\NetworkException.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Models\AlbumImageComments.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Models\AlbumImageCommentsData.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Models\ApiErrorData.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Models\AuthUser.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Models\ApiError.cs" />

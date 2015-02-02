@@ -11,5 +11,6 @@ namespace ImgurViral.Utils
     public interface IDataService
     {
         Task<List<GalleryImageData>> GetGalleryImage(Action<List<GalleryImageData>, Exception> callback);
+        Task<List<AlbumImageCommentsData>> GetAlbumImageComments(Action<List<AlbumImageCommentsData>, Exception> callback, String id);
     }
 }

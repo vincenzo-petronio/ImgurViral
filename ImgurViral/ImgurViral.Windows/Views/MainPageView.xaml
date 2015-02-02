@@ -5,7 +5,11 @@
     xmlns:local="using:ImgurViral.Views"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    mc:Ignorable="d">
+    mc:Ignorable="d"
+    xmlns:vm="using:ImgurViral.ViewModels"
+    xmlns:cm="using:Caliburn.Micro"
+    d:DataContext="{d:DesignInstance Type=vm:MainPageViewModel, IsDesignTimeCreatable=True}"
+    cm:Bind.AtDesignTime="True">
     
     <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
         <Grid.RowDefinitions>
@@ -74,7 +78,7 @@
                 <ColumnDefinition Width="30*" />
             </Grid.ColumnDefinitions>
             
-            <FlipView Grid.Column="0" Grid.ColumnSpan="2" x:Name="Items" SelectedItem="SelectedItem" IsTabStop="True">
+            <FlipView Grid.Column="0" x:Name="Items" SelectedItem="{Binding SelectedItem, Mode=TwoWay}" IsTabStop="True">
                 <FlipView.ItemTemplate>
                     <DataTemplate>
                         <ScrollViewer ZoomMode="Enabled" VerticalScrollBarVisibility="Hidden" MinZoomFactor="0.5" MaxZoomFactor="1.0" VerticalScrollMode="Auto" HorizontalScrollMode="Disabled" >
@@ -83,6 +87,21 @@
                     </DataTemplate>
                 </FlipView.ItemTemplate>
             </FlipView>
+            
+            <Grid Grid.Column="1">
+                <ListView ItemsSource="{Binding ImageComments}" IsItemClickEnabled="False" HorizontalAlignment="Center">
+                    <ListView.ItemTemplate>
+                        <DataTemplate>
+                            <Border CornerRadius="4" Background="Transparent" BorderBrush="Gray" BorderThickness="1" Padding="4">
+                                <StackPanel>
+                                    <TextBlock Text="{Binding Author}" FontWeight="Bold" />
+                                    <TextBlock Text="{Binding Comment}" TextWrapping="WrapWholeWords" />
+                                </StackPanel>
+                            </Border>
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                </ListView>
+            </Grid>
         </Grid>
 
         <VisualStateManager.VisualStateGroups>

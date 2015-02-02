@@ -65,6 +65,45 @@ namespace ImgurViral.Utils
             return null;
         }
 
+
+        public async Task<List<AlbumImageCommentsData>> GetAlbumImageComments(Action<List<AlbumImageCommentsData>, Exception> callback, String id)
+        {
+            Exception exception = null;
+            List<AlbumImageCommentsData> results = new List<AlbumImageCommentsData>();
+            String uri = String.Format(Constants.ENDPOINT_API_ALBUMIMAGECOMMENTS, id, "best"); //"https://api.imgur.com/3/gallery/image/8W62Swc/comments/best";
+            var response = String.Empty;
+
+            try
+            {
+                response = await this.DownloadData(uri);
+
+                AlbumImageComments responseDeserialized = JsonConvert.DeserializeObject<AlbumImageComments>(response);
+                var responseDeserializedSelected = from item in responseDeserialized.Data select item;
+                foreach (var d in responseDeserializedSelected)
+                {
+                    results.Add(d);
+                }
+            }
+            catch (NetworkException ne)
+            {
+                exception = ne;
+            }
+            catch (ArgumentNullException ane)
+            {
+                exception = ane;
+            }
+            catch (ApiException ae)
+            {
+                exception = ae;
+            }
+
+            System.Diagnostics.Debug.WriteLine("[URI]\t{0}\n[RESPONSE]{1}\n\n", uri, response);
+
+            callback(results, exception);
+
+            return null;
+        }
+
         /// <summary>
         /// Get data from url
         /// </summary>

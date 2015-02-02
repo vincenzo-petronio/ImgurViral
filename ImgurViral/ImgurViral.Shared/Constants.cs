@@ -28,5 +28,6 @@ namespace ImgurViral
         public const String ENDPOINT_API_AUTHORIZE = "https://api.imgur.com/oauth2/authorize?client_id={0}&response_type=token";
         public const String ENDPOINT_API_REFRESH_BASE = "https://api.imgur.com/oauth2/token";
         public const String ENDPOINT_API_GALLERY_VIRAL = ENDPOINT_API_BASE + "gallery/hot/viral/0.json";
+        public const String ENDPOINT_API_ALBUMIMAGECOMMENTS = ENDPOINT_API_BASE + "gallery/image/{0}/comments/{1}";
     }
 }
