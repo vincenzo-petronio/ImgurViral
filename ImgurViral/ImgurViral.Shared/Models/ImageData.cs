@@ -36,5 +36,7 @@ namespace ImgurViral.Models
         public Boolean IsNsfw { get; set; }
         public String Vote { get; set; }
         public String AccountUrl { get; set; }
+        [JsonProperty(PropertyName = "account_id")]
+        public Int32? AccountId { get; set; }
     }
 }
