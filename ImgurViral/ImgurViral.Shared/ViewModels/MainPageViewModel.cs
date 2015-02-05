@@ -9,6 +9,8 @@ using System.Diagnostics;
 using Windows.ApplicationModel.DataTransfer;
 using Windows.ApplicationModel.Resources;
 using Windows.UI.Popups;
+using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Media.Imaging;
 
 namespace ImgurViral.ViewModels
 {
@@ -240,17 +242,17 @@ namespace ImgurViral.ViewModels
                     selectedItem = value;
                     NotifyOfPropertyChange(() => SelectedItem);
 
-                    this.dataService.GetAlbumImageComments(async (comments, err) =>
-                    {
-                        if (err == null)
-                        {
-                            this.ImageComments = comments;
-                        }
-                        else
-                        {
-                            // TODO
-                        }
-                    }, SelectedItem.Id);
+                    //this.dataService.GetAlbumImageComments(async (comments, err) =>
+                    //{
+                    //    if (err == null)
+                    //    {
+                    //        this.ImageComments = comments;
+                    //    }
+                    //    else
+                    //    {
+                    //        // TODO
+                    //    }
+                    //}, SelectedItem.Id);
                 }
             }
         }
@@ -290,6 +292,40 @@ namespace ImgurViral.ViewModels
         {
             e.Request.Data.Properties.Title = resourceLoader.GetString("AppTitle/Text");
             e.Request.Data.SetText(SelectedItem.Title + "\n\n" + SelectedItem.Link);
+        }
+
+        public void ImageDoubleTapped(ScrollViewer sv)
+        {
+            if (sv == null) return;
+
+            if (sv.ZoomFactor != 1)
+            {
+                sv.HorizontalScrollMode = ScrollMode.Disabled;
+                sv.HorizontalScrollBarVisibility = ScrollBarVisibility.Disabled;
+                sv.MaxZoomFactor = 1;
+                #if WINDOWS_APP
+                bool isViewChanged = sv.ChangeView(null, null, 1);
+                #elif WINDOWS_PHONE_APP
+                sv.ZoomToFactor(1);
+                #endif
+            }
+            else if (sv.ZoomFactor == 1)
+            {
+                var image = (sv.Content as Windows.UI.Xaml.Controls.Image);
+                var bitmapImage = (image.Source as BitmapImage).PixelWidth;
+                if (bitmapImage > sv.ActualWidth)
+                {
+                    sv.MaxZoomFactor = 2.0f;
+                    sv.HorizontalScrollMode = ScrollMode.Enabled;
+                    sv.HorizontalScrollBarVisibility = ScrollBarVisibility.Auto;
+                    #if WINDOWS_APP
+                    bool isViewChanged = sv.ChangeView(((bitmapImage * 2.0f) - sv.ActualWidth) / 2, null, sv.MaxZoomFactor);
+                    #elif WINDOWS_PHONE_APP
+                    sv.ZoomToFactor(2);
+                    sv.ScrollToHorizontalOffset(((bitmapImage * 2.0f) - sv.ActualWidth) / 2);
+                    #endif
+                }
+            }
         }
     }
 }

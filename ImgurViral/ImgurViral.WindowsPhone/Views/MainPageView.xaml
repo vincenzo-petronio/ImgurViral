@@ -6,7 +6,10 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d"
-    xmlns:cal="using:Caliburn.Micro">
+    xmlns:vm="using:ImgurViral.ViewModels"
+    xmlns:cm="using:Caliburn.Micro"
+    d:DataContext="{d:DesignInstance Type=vm:MainPageViewModel, IsDesignTimeCreatable=True}"
+    cm:Bind.AtDesignTime="True">
     
     <Page.BottomAppBar>
         <CommandBar ClosedDisplayMode="Minimal">
@@ -68,11 +71,11 @@
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="*" />
             </Grid.RowDefinitions>
-            <FlipView Grid.Row="0"  Grid.RowSpan="2" x:Name="Items" SelectedItem="SelectedItem" IsTabStop="True">
+            <FlipView Grid.Row="0"  Grid.RowSpan="2" x:Name="Items" SelectedItem="{Binding SelectedItem, Mode=TwoWay}" IsTabStop="True">
                 <FlipView.ItemTemplate>
                     <DataTemplate>
-                        <ScrollViewer ZoomMode="Enabled" VerticalScrollBarVisibility="Hidden" MinZoomFactor="0.5" MaxZoomFactor="1.0" VerticalScrollMode="Auto" HorizontalScrollMode="Disabled" >
-                            <Image Source="{Binding Link}" Stretch="Uniform" VerticalAlignment="Center" HorizontalAlignment="Center" cal:Message.Attach="[Event ImageOpened] = [Action ImageIsOpened()]; [Event ImageFailed] = [Action ImageIsFailed()]"/>
+                        <ScrollViewer ZoomMode="Enabled" VerticalScrollBarVisibility="Hidden" MinZoomFactor="0.5" MaxZoomFactor="1.0" VerticalScrollMode="Auto" HorizontalScrollMode="Disabled" cm:Message.Attach="[Event DoubleTapped] = [Action ImageDoubleTapped($source)]" >
+                            <Image Source="{Binding Link}" Stretch="Uniform" VerticalAlignment="Center" HorizontalAlignment="Center" cm:Message.Attach="[Event ImageOpened] = [Action ImageIsOpened()]; [Event ImageFailed] = [Action ImageIsFailed()]"/>
                         </ScrollViewer>
                     </DataTemplate>
                 </FlipView.ItemTemplate>

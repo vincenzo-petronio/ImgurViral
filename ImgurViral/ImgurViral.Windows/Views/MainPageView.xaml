@@ -81,8 +81,8 @@
             <FlipView Grid.Column="0" x:Name="Items" SelectedItem="{Binding SelectedItem, Mode=TwoWay}" IsTabStop="True">
                 <FlipView.ItemTemplate>
                     <DataTemplate>
-                        <ScrollViewer ZoomMode="Enabled" VerticalScrollBarVisibility="Hidden" MinZoomFactor="0.5" MaxZoomFactor="1.0" VerticalScrollMode="Auto" HorizontalScrollMode="Disabled" >
-                            <Image Source="{Binding Link}" Stretch="Uniform" VerticalAlignment="Center" HorizontalAlignment="Center" />
+                        <ScrollViewer ZoomMode="Enabled" VerticalScrollBarVisibility="Hidden" MinZoomFactor="0.5" MaxZoomFactor="1.0" VerticalScrollMode="Auto" HorizontalScrollMode="Disabled" cm:Message.Attach="[Event DoubleTapped] = [Action ImageDoubleTapped($source)]">
+                            <Image Source="{Binding Link}" Stretch="Uniform" VerticalAlignment="Center" HorizontalAlignment="Center" cm:Message.Attach="[Event ImageOpened] = [Action ImageIsOpened()]; [Event ImageFailed] = [Action ImageIsFailed()]"/>
                         </ScrollViewer>
                     </DataTemplate>
                 </FlipView.ItemTemplate>
