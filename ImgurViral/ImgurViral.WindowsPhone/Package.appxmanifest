@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Package xmlns="http://schemas.microsoft.com/appx/2010/manifest" xmlns:m2="http://schemas.microsoft.com/appx/2013/manifest" xmlns:m3="http://schemas.microsoft.com/appx/2014/manifest" xmlns:mp="http://schemas.microsoft.com/appx/2014/phone/manifest">
-  <Identity Name="41038vincenzo.petronio.ImgurViralbeta" Publisher="CN=ACFBCF7C-15E3-437C-8F22-BE694B4B2AA2" Version="0.1.1.0" />
+  <Identity Name="41038vincenzo.petronio.ImgurViralbeta" Publisher="CN=ACFBCF7C-15E3-437C-8F22-BE694B4B2AA2" Version="0.2.0.0" />
   <mp:PhoneIdentity PhoneProductId="3fec46d5-a133-4ece-ac3d-c478dc545a73" PhonePublisherId="00000000-0000-0000-0000-000000000000" />
   <Properties>
     <DisplayName>Imgur Viral beta</DisplayName>
