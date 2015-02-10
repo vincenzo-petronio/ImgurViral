@@ -78,7 +78,7 @@
                 <ColumnDefinition Width="30*" />
             </Grid.ColumnDefinitions>
             
-            <FlipView Grid.Column="0" x:Name="Items" SelectedItem="{Binding SelectedItem, Mode=TwoWay}" IsTabStop="True">
+            <FlipView Grid.Column="0" x:Name="Items" SelectedItem="{Binding SelectedItem, Mode=TwoWay}" IsTabStop="True" cm:Message.Attach="[Event SelectionChanged] = [Action FlipViewSelectionChanged($source)]">
                 <FlipView.ItemTemplate>
                     <DataTemplate>
                         <ScrollViewer ZoomMode="Enabled" VerticalScrollBarVisibility="Hidden" MinZoomFactor="0.5" MaxZoomFactor="1.0" VerticalScrollMode="Auto" HorizontalScrollMode="Disabled" cm:Message.Attach="[Event DoubleTapped] = [Action ImageDoubleTapped($source)]">
@@ -92,9 +92,9 @@
                 <ListView ItemsSource="{Binding ImageComments}" IsItemClickEnabled="False" HorizontalAlignment="Center">
                     <ListView.ItemTemplate>
                         <DataTemplate>
-                            <Border CornerRadius="4" Background="Transparent" BorderBrush="Gray" BorderThickness="1" Padding="4">
+                            <Border CornerRadius="4"  BorderBrush="Gray" BorderThickness="1" Padding="4" Background="#FF3E3E3E">
                                 <StackPanel>
-                                    <TextBlock Text="{Binding Author}" FontWeight="Bold" />
+                                    <TextBlock Text="{Binding Author}" FontWeight="Bold" LineHeight="25" />
                                     <TextBlock Text="{Binding Comment}" TextWrapping="WrapWholeWords" />
                                 </StackPanel>
                             </Border>

@@ -6,6 +6,7 @@ using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Threading.Tasks;
 using Windows.ApplicationModel.DataTransfer;
 using Windows.ApplicationModel.Resources;
 using Windows.UI.Popups;
@@ -208,6 +209,9 @@ namespace ImgurViral.ViewModels
             }
         }
 
+        /// <summary>
+        /// Collection of items for ListView
+        /// </summary>
         public List<AlbumImageCommentsData> ImageComments
         {
             get
@@ -241,18 +245,6 @@ namespace ImgurViral.ViewModels
                 {
                     selectedItem = value;
                     NotifyOfPropertyChange(() => SelectedItem);
-
-                    //this.dataService.GetAlbumImageComments(async (comments, err) =>
-                    //{
-                    //    if (err == null)
-                    //    {
-                    //        this.ImageComments = comments;
-                    //    }
-                    //    else
-                    //    {
-                    //        // TODO
-                    //    }
-                    //}, SelectedItem.Id);
                 }
             }
         }
@@ -292,6 +284,47 @@ namespace ImgurViral.ViewModels
         {
             e.Request.Data.Properties.Title = resourceLoader.GetString("AppTitle/Text");
             e.Request.Data.SetText(SelectedItem.Title + "\n\n" + SelectedItem.Link);
+        }
+
+        public async void FlipViewSelectionChanged(FlipView fv)
+        {
+            if (fv == null) return;
+
+            fv.IsEnabled = false;
+            ProgressRingIsActive = true;
+            
+            if (this.imageComments.Count != 0)
+            {
+                this.imageComments.Clear();
+            }
+
+            await this.dataService.GetAlbumImageComments((comments, err) =>
+            {
+                if (err == null)
+                {
+                    this.ImageComments = comments;
+                }
+                else
+                {
+                    // TODO
+                }
+            }, SelectedItem.Id);
+
+            await EnableFlipViewTaskDelay();
+            ProgressRingIsActive = false;
+            fv.IsEnabled = true;
+        }
+
+        private async Task EnableFlipViewTaskDelay()
+        {
+            try
+            {
+                await Task.Delay(1000);
+            }
+            catch (Exception e)
+            {
+                Debug.WriteLine("EnableFlipViewTaskDelay", e.Message);
+            }
         }
 
         public void ImageDoubleTapped(ScrollViewer sv)
