@@ -26,6 +26,7 @@ namespace ImgurViral.ViewModels
         private String itemsCounter;
         private ResourceLoader resourceLoader;
         private Boolean isLogoutVisible;
+        private Boolean isFlipViewEnabled;
         private DataTransferManager dtm;
 
         public MainPageViewModel(IDataService dataService, INavigationService navigationService)
@@ -37,6 +38,7 @@ namespace ImgurViral.ViewModels
             this.imageComments = new List<AlbumImageCommentsData>();
             this.resourceLoader = new ResourceLoader();
             this.isLogoutVisible = true;
+            this.isFlipViewEnabled = true;
 
 #if WINDOWS_PHONE_APP
             Windows.Phone.UI.Input.HardwareButtons.BackPressed += HardwareButtons_BackPressed;
@@ -154,6 +156,26 @@ namespace ImgurViral.ViewModels
                 {
                     progressRingIsActive = value;
                     NotifyOfPropertyChange(() => ProgressRingIsActive);
+                }
+            }
+        }
+
+        /// <summary>
+        /// In binding con la proprietà IsEnabled del FlipView
+        /// </summary>
+        public Boolean IsFlipViewEnabled
+        {
+            get
+            {
+                return isFlipViewEnabled;
+            }
+
+            set
+            {
+                if (value != isFlipViewEnabled)
+                {
+                    isFlipViewEnabled = value;
+                    NotifyOfPropertyChange(() => IsFlipViewEnabled);
                 }
             }
         }
@@ -286,17 +308,12 @@ namespace ImgurViral.ViewModels
             e.Request.Data.SetText(SelectedItem.Title + "\n\n" + SelectedItem.Link);
         }
 
-        public async void FlipViewSelectionChanged(FlipView fv)
+        public async void FlipViewSelectionChanged(GalleryImageData item)
         {
-            if (fv == null) return;
+            if (item == null) return;
 
-            fv.IsEnabled = false;
+            IsFlipViewEnabled = false;
             ProgressRingIsActive = true;
-            
-            if (this.imageComments.Count != 0)
-            {
-                this.imageComments.Clear();
-            }
 
             await this.dataService.GetAlbumImageComments((comments, err) =>
             {
@@ -308,11 +325,11 @@ namespace ImgurViral.ViewModels
                 {
                     // TODO
                 }
-            }, SelectedItem.Id);
+            }, item.Id);
 
             await EnableFlipViewTaskDelay();
             ProgressRingIsActive = false;
-            fv.IsEnabled = true;
+            IsFlipViewEnabled = true;
         }
 
         private async Task EnableFlipViewTaskDelay()
