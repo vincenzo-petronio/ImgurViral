@@ -21,12 +21,12 @@ namespace ImgurViral.ViewModels
         private INavigationService navigationService;
         private Boolean progressRingIsActive;
         private List<GalleryImageData> items;
-        private List<AlbumImageCommentsData> imageComments;
+        //private List<AlbumImageCommentsData> imageComments;
         private GalleryImageData selectedItem;
         private String itemsCounter;
         private ResourceLoader resourceLoader;
         private Boolean isLogoutVisible;
-        private Boolean isFlipViewEnabled;
+        //private Boolean isFlipViewEnabled;
         private DataTransferManager dtm;
 
         public MainPageViewModel(IDataService dataService, INavigationService navigationService)
@@ -35,10 +35,10 @@ namespace ImgurViral.ViewModels
             this.navigationService = navigationService;
             this.progressRingIsActive = true;
             this.items = new List<GalleryImageData>();
-            this.imageComments = new List<AlbumImageCommentsData>();
+            //this.imageComments = new List<AlbumImageCommentsData>();
             this.resourceLoader = new ResourceLoader();
             this.isLogoutVisible = true;
-            this.isFlipViewEnabled = true;
+            //this.isFlipViewEnabled = true;
 
 #if WINDOWS_PHONE_APP
             Windows.Phone.UI.Input.HardwareButtons.BackPressed += HardwareButtons_BackPressed;
@@ -50,34 +50,34 @@ namespace ImgurViral.ViewModels
         {
             if (Execute.InDesignMode)
             {
-                this.ImageComments = new List<AlbumImageCommentsData>
-                {
-                    new AlbumImageCommentsData 
-                    {
-                        Author = "Blake",
-                        Comment = "Lorem ipsum dolor sit amet, consectetur adipiscing elit",
-                    },
-                    new AlbumImageCommentsData 
-                    {
-                        Author = "Colin1985imgurOfficial",
-                        Comment = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
-                    },
-                    new AlbumImageCommentsData 
-                    {
-                        Author = "Christopher",
-                        Comment = "Lorem ipsum dolor sit amet",
-                    },
-                    new AlbumImageCommentsData 
-                    {
-                        Author = "Justin",
-                        Comment = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor",
-                    },
-                    new AlbumImageCommentsData 
-                    {
-                        Author = "Justin & Christopher",
-                        Comment = "Lorem ipsum",
-                    }
-                };
+                //this.ImageComments = new List<AlbumImageCommentsData>
+                //{
+                //    new AlbumImageCommentsData 
+                //    {
+                //        Author = "Blake",
+                //        Comment = "Lorem ipsum dolor sit amet, consectetur adipiscing elit",
+                //    },
+                //    new AlbumImageCommentsData 
+                //    {
+                //        Author = "Colin1985imgurOfficial",
+                //        Comment = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
+                //    },
+                //    new AlbumImageCommentsData 
+                //    {
+                //        Author = "Christopher",
+                //        Comment = "Lorem ipsum dolor sit amet",
+                //    },
+                //    new AlbumImageCommentsData 
+                //    {
+                //        Author = "Justin",
+                //        Comment = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor",
+                //    },
+                //    new AlbumImageCommentsData 
+                //    {
+                //        Author = "Justin & Christopher",
+                //        Comment = "Lorem ipsum",
+                //    }
+                //};
             }
         }
 
@@ -163,22 +163,22 @@ namespace ImgurViral.ViewModels
         /// <summary>
         /// In binding con la proprietà IsEnabled del FlipView
         /// </summary>
-        public Boolean IsFlipViewEnabled
-        {
-            get
-            {
-                return isFlipViewEnabled;
-            }
+        //public Boolean IsFlipViewEnabled
+        //{
+        //    get
+        //    {
+        //        return isFlipViewEnabled;
+        //    }
 
-            set
-            {
-                if (value != isFlipViewEnabled)
-                {
-                    isFlipViewEnabled = value;
-                    NotifyOfPropertyChange(() => IsFlipViewEnabled);
-                }
-            }
-        }
+        //    set
+        //    {
+        //        if (value != isFlipViewEnabled)
+        //        {
+        //            isFlipViewEnabled = value;
+        //            NotifyOfPropertyChange(() => IsFlipViewEnabled);
+        //        }
+        //    }
+        //}
 
         public void ImageIsOpened()
         {
@@ -234,22 +234,22 @@ namespace ImgurViral.ViewModels
         /// <summary>
         /// Collection of items for ListView
         /// </summary>
-        public List<AlbumImageCommentsData> ImageComments
-        {
-            get
-            {
-                return imageComments;
-            }
+        //public List<AlbumImageCommentsData> ImageComments
+        //{
+        //    get
+        //    {
+        //        return imageComments;
+        //    }
 
-            set
-            {
-                if (value != null && imageComments != value)
-                {
-                    imageComments = value;
-                    NotifyOfPropertyChange(() => ImageComments);
-                }
-            }
-        }
+        //    set
+        //    {
+        //        if (value != null && imageComments != value)
+        //        {
+        //            imageComments = value;
+        //            NotifyOfPropertyChange(() => ImageComments);
+        //        }
+        //    }
+        //}
 
         /// <summary>
         /// Selected item from FlipView
@@ -308,41 +308,41 @@ namespace ImgurViral.ViewModels
             e.Request.Data.SetText(SelectedItem.Title + "\n\n" + SelectedItem.Link);
         }
 
-        public async void FlipViewSelectionChanged(GalleryImageData item)
-        {
-            if (item == null) return;
+        //public async void FlipViewSelectionChanged(GalleryImageData item)
+        //{
+        //    if (item == null) return;
 
-            IsFlipViewEnabled = false;
-            ProgressRingIsActive = true;
+        //    IsFlipViewEnabled = false;
+        //    ProgressRingIsActive = true;
 
-            await this.dataService.GetAlbumImageComments((comments, err) =>
-            {
-                if (err == null)
-                {
-                    this.ImageComments = comments;
-                }
-                else
-                {
-                    // TODO
-                }
-            }, item.Id);
+        //    await this.dataService.GetAlbumImageComments((comments, err) =>
+        //    {
+        //        if (err == null)
+        //        {
+        //            this.ImageComments = comments;
+        //        }
+        //        else
+        //        {
+        //            // TODO
+        //        }
+        //    }, item.Id);
 
-            await EnableFlipViewTaskDelay();
-            ProgressRingIsActive = false;
-            IsFlipViewEnabled = true;
-        }
+        //    await EnableFlipViewTaskDelay();
+        //    ProgressRingIsActive = false;
+        //    IsFlipViewEnabled = true;
+        //}
 
-        private async Task EnableFlipViewTaskDelay()
-        {
-            try
-            {
-                await Task.Delay(1000);
-            }
-            catch (Exception e)
-            {
-                Debug.WriteLine("EnableFlipViewTaskDelay", e.Message);
-            }
-        }
+        //private async Task EnableFlipViewTaskDelay()
+        //{
+        //    try
+        //    {
+        //        await Task.Delay(1000);
+        //    }
+        //    catch (Exception e)
+        //    {
+        //        Debug.WriteLine("EnableFlipViewTaskDelay", e.Message);
+        //    }
+        //}
 
         public void ImageDoubleTapped(ScrollViewer sv)
         {
