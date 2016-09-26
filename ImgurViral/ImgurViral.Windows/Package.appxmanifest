@@ -1,8 +1,8 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Package xmlns="http://schemas.microsoft.com/appx/2010/manifest" xmlns:m2="http://schemas.microsoft.com/appx/2013/manifest">
-  <Identity Name="41038vincenzo.petronio.ImgurViral" Publisher="CN=ACFBCF7C-15E3-437C-8F22-BE694B4B2AA2" Version="0.2.0.0" />
+  <Identity Name="41038vincenzo.petronio.ImgurViralbeta" Publisher="CN=ACFBCF7C-15E3-437C-8F22-BE694B4B2AA2" Version="1.1.0.0" />
   <Properties>
-    <DisplayName>Imgur Viral</DisplayName>
+    <DisplayName>Imgur Viral beta</DisplayName>
     <PublisherDisplayName>vincenzo.petronio</PublisherDisplayName>
     <Logo>Assets\StoreLogo.png</Logo>
   </Properties>
@@ -15,7 +15,7 @@
   </Resources>
   <Applications>
     <Application Id="App" Executable="$targetnametoken$.exe" EntryPoint="ImgurViral.Windows.App">
-      <m2:VisualElements DisplayName="Imgur Viral" Square150x150Logo="Assets\Logo.png" Square30x30Logo="Assets\SmallLogo.png" Description="View, comment and share some of the most viral images thanks to Imgur." ForegroundText="light" BackgroundColor="#464646" ToastCapable="false">
+      <m2:VisualElements DisplayName="Imgur Viral beta" Square150x150Logo="Assets\Logo.png" Square30x30Logo="Assets\SmallLogo.png" Description="View, comment and share some of the most viral images thanks to Imgur." ForegroundText="light" BackgroundColor="#464646" ToastCapable="false">
         <m2:DefaultTile ShortName="Imgur Viral">
           <m2:ShowNameOnTiles>
             <m2:ShowOn Tile="square150x150Logo" />
